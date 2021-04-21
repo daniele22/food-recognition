@@ -467,7 +467,7 @@ custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classe
 dist_params = dict(backend='nccl')
 
 # runtime settings
-load_from = 'epoch_20.pth'   # used to load the model
+load_from = '/content/drive/My Drive/ML/htc_x101/epoch_20.pth'   # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 
