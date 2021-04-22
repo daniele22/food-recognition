@@ -20,13 +20,13 @@ class Detector:
 
     def __init__(self):
         # config file name
-        self.model_cfg_file = '../configs/faster_rcnn/faster_rcnn_r50_fpn_1x_coco.py'
+        self.model_cfg_file = '/content/mmdetection/configs/mask_rcnn/mask_rcnn_r50_fpn_1x_coco.py'
         # get weights
-        self.model_checkpoint = '../checkpoints/faster_rcnn_r50_fpn_1x_coco_20200130-047c8118.pth'
+        self.model_checkpoint = '/content/drive/MyDrive/ML/mask_rcnn_r50/epoch_8.pth'
 
         # build the model from a config file and a checkpoint file
         #self.model = init_detector(config_file, checkpoint_file, device='cuda:0')
-        self.model = init_detector(config_file, checkpoint_file, device='cpu')
+        self.model = init_detector(model_cfg_file, model_checkpoint, device='cpu')
 
 
     def inference(self, img_file):
