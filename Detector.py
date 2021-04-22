@@ -14,7 +14,7 @@ import mmcv.visualization.image as mmcv_image
 from mmdet.apis import set_random_seed
 from mmdet.datasets import build_dataset
 from mmdet.models import build_detector
-from mmdet.apis import train_detector, inference_detector, show_result, init_detector
+from mmdet.apis import train_detector, inference_detector, show_result_pyplot, init_detector
 
 class Detector:
 
