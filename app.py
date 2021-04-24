@@ -1,6 +1,6 @@
 from Detector import Detector
 import io
-from flask import Flask, render_template, request, send_from_directory, send_file, session
+from flask import Flask, render_template, request, send_from_directory, send_file, session, flash, redirect
 from flask_dropzone import Dropzone
 from flask_ngrok import run_with_ngrok  # comment if not using colab
 from PIL import Image
@@ -12,6 +12,8 @@ from werkzeug.utils import secure_filename
 # for visualizing outputs
 import matplotlib.pyplot as plt
 
+import const
+
 ROOT_DIR = os.getcwd()
 # Import Mask RCNN
 sys.path.append(ROOT_DIR)  # To find local version of the library
@@ -22,7 +24,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
-app.config['UPLOAD_PATH'] = 'uploads'
+app.config['UPLOAD_PATH'] = '/content/food-recongition/uploads'  # Ricordarsi che è lo stesso path che c'è in prediction.html
 #app.config['MODEL_PATH'] = 'model/mask_rcnn_food-challenge_0026.h5'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "thisisasupersecretkey"
@@ -41,78 +43,78 @@ detector = Detector()
 # function to load img from url
 
 
-def load_image_url(url):
-    response = requests.get(url)
-    img = Image.open(io.BytesIO(response.content))
-    return img
-
-# run inference
-
-
-def run_inference(img_path="file.jpg"):
-    # run inference using mmdetection
-    result_img = detector.inference(img_path)
-    # clean up
-    try:
-        os.remove(img_path)
-    except:
-        pass
-
-    return result_img
-
-
-@app.errorhandler(413)
-def too_large(e):
-    return "File is too large", 413
-
-
-# carica la homepage
-@app.route("/")
-def index():
-    return render_template('index.html')
-
-
-@app.route("/detect", methods=['POST', 'GET'])
-def upload():
-    if request.method == 'POST':
-        try:
-            # open image
-            file = Image.open(request.files['file'].stream)
-            # remove alpha channel
-            rgb_im = file.convert('RGB')
-            rgb_im.save('file.jpg')
-        # failure
-        except:
-            return render_template("failure.html")
-
-    elif request.method == 'GET':
-        # get url
-        url = request.args.get("url")
-        # save
-        try:
-            # save image as jpg
-            # urllib.request.urlretrieve(url, 'file.jpg')
-            rgb_im = load_image_url(url)
-            rgb_im = rgb_im.convert('RGB')
-            rgb_im.save('file.jpg')
-        # failure
-        except:
-            return render_template("failure.html")
-
-    # run inference
-    # result_img = run_inference_transform()
-    result_img = run_inference('file.jpg')
-
-    # create file-object in memory
-    file_object = io.BytesIO()
-
-    # write PNG in file-object
-    result_img.save(file_object, 'PNG')
-
-    # move to beginning of file so `send_file()` it will read from start
-    file_object.seek(0)
-
-    return send_file(file_object, mimetype='image/jpeg')
+# def load_image_url(url):
+#     response = requests.get(url)
+#     img = Image.open(io.BytesIO(response.content))
+#     return img
+#
+# # run inference
+#
+#
+# def run_inference(img_path="file.jpg"):
+#     # run inference using mmdetection
+#     result_img = detector.inference(img_path)
+#     # clean up
+#     try:
+#         os.remove(img_path)
+#     except:
+#         pass
+#
+#     return result_img
+#
+#
+# @app.errorhandler(413)
+# def too_large(e):
+#     return "File is too large", 413
+#
+#
+# # carica la homepage
+# @app.route("/")
+# def index():
+#     return render_template('index.html')
+#
+#
+# @app.route("/detect", methods=['POST', 'GET'])
+# def upload():
+#     if request.method == 'POST':
+#         try:
+#             # open image
+#             file = Image.open(request.files['file'].stream)
+#             # remove alpha channel
+#             rgb_im = file.convert('RGB')
+#             rgb_im.save('file.jpg')
+#         # failure
+#         except:
+#             return render_template("failure.html")
+#
+#     elif request.method == 'GET':
+#         # get url
+#         url = request.args.get("url")
+#         # save
+#         try:
+#             # save image as jpg
+#             # urllib.request.urlretrieve(url, 'file.jpg')
+#             rgb_im = load_image_url(url)
+#             rgb_im = rgb_im.convert('RGB')
+#             rgb_im.save('file.jpg')
+#         # failure
+#         except:
+#             return render_template("failure.html")
+#
+#     # run inference
+#     # result_img = run_inference_transform()
+#     result_img = run_inference('file.jpg')
+#
+#     # create file-object in memory
+#     file_object = io.BytesIO()
+#
+#     # write PNG in file-object
+#     result_img.save(file_object, 'PNG')
+#
+#     # move to beginning of file so `send_file()` it will read from start
+#     file_object.seek(0)
+#
+#     return send_file(file_object, mimetype='image/jpeg')
 
 
 def validate_image(stream):
@@ -126,9 +128,12 @@ def validate_image(stream):
 # this function is used to predict on the uploaded image
 
 
-def predict_on_image(uploaded_file):
-    result, final_img = detector.inference(uploaded_file)
-    plt.imshow(final_img)
+def predict_on_image(uploaded_file, score_threshold):
+    prediction_path = app.config['UPLOAD_PATH'] + "/inference_response.jpg"
+    result, final_img = detector.inference(uploaded_file, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
+    fig, ax = plt.subplots(figsize=(16, 16))
+    image = Image.open(prediction_path)
+    ax.imshow(image)
     plt.show()
 
     # global model
@@ -143,7 +148,7 @@ def predict_on_image(uploaded_file):
     #                             class_names, r['scores'],figsize=(16,16), ax=ax)
     # fig.savefig('static/prediction.png',bbox_inches='tight')   # save the figure to file
     # plt.close(fig)
-    response = []
+    response = [{"food": "food_prova", "score": "0.55"}]
     # for p,scr in zip(results[0]['class_ids'],results[0]['scores']):
     #     response.append({"food":class_names[p],"score":str(scr)})
     return response
@@ -154,30 +159,40 @@ def too_large(e):
     return "File is too large", 413
 
 
+# @app.route('/uploads/<filename>')
+# def uploaded_file(filename):
+#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
 @app.route('/', methods=['GET', 'POST'])
 def upload_files():
     if request.method == "POST":
+        score_thr = request.form['score_treshold']
+        print("Score threshold = ", score_thr)
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
         uploaded_file = request.files['file']
-        filename = secure_filename(uploaded_file.filename)
-        if filename != '':
+        # if user does not select file, browser also submit an empty part without filename
+        if uploaded_file != '':
+            filename = secure_filename(uploaded_file.filename) #check if the file is secure
+            # check if the extension of the file is correct
             file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
-                    file_ext != validate_image(uploaded_file.stream):
+            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or file_ext != validate_image(uploaded_file.stream):
                 return "Invalid image", 400
-            try:
-                # save image as jpg
-                # urllib.request.urlretrieve(url, 'file.jpg')
-                rgb_im = load_image_url(url)
-                rgb_im = rgb_im.convert('RGB')
-                rgb_im.save('file.jpg')
-            # failure
-            except:
-                return "Invalid image file.jpg", 400
-            response = predict_on_image(uploaded_file)
-            print(response)
+            # if the file extension is correct save the file on disk
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            print("filepath", filepath)
+            uploaded_file.save(filepath)
+            print("file saved")
+            #file_url = url_for('uploaded_file', filename=filename)
+            response = predict_on_image(filepath, score_threshold=score_thr)
+            print("response:", response)
             session["response"] = response
             return render_template("prediction.html", jsonfile=session["response"])
-
+        else:
+            flash('No selected file')
+            return redirect(request.url)
     else:
         return render_template('index.html')
 
@@ -187,16 +202,33 @@ def prediction():
     if request.method == "GET":
         return render_template("prediction.html", jsonfile=session["response"])
     else:
+        score_thr = request.form['score_treshold']
+        print("Score threshold = ", score_thr)
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
         uploaded_file = request.files['file']
         filename = secure_filename(uploaded_file.filename)
-        if filename != '':
+        if uploaded_file != '':
+            filename = secure_filename(uploaded_file.filename)  # check if the file is secure
+            # check if the extension of the file is correct
             file_ext = os.path.splitext(filename)[1]
-            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
-                    file_ext != validate_image(uploaded_file.stream):
+            if file_ext not in app.config['UPLOAD_EXTENSIONS'] or file_ext != validate_image(uploaded_file.stream):
                 return "Invalid image", 400
-            response = predict_on_image(uploaded_file)
+            # if the file extension is correct save the file on disk
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            print("filepath", filepath)
+            uploaded_file.save(filepath)
+            print("file saved")
+            # file_url = url_for('uploaded_file', filename=filename)
+            response = predict_on_image(filepath, score_threshold=score_thr)
+            print("response:", response)
             session["response"] = response
-        return render_template("prediction.html", jsonfile=session["response"])
+            return render_template("prediction.html", jsonfile=session["response"])
+        else:
+            flash('No selected file')
+            return "Invalid image", 400
 
 
 if __name__ == "__main__":

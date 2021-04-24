@@ -15,6 +15,7 @@ from mmdet.apis import set_random_seed
 from mmdet.datasets import build_dataset
 from mmdet.models import build_detector
 from mmdet.apis import train_detector, inference_detector, show_result_pyplot, init_detector
+from mmdet.models.detectors import BaseDetector
 
 class Detector:
 
@@ -29,10 +30,26 @@ class Detector:
         self.model = init_detector(self.model_cfg_file, self.model_checkpoint, device='cpu')
 
 
-    def inference(self, img_file):
-        result = inference_detector(model, img_file)
+    def inference(self, filepath, prediction_path, score_thr):
+        result = inference_detector(self.model, filepath)
         # show the results
-        final_img = show_result_pyplot(model, img_file, result, score_thr=0.3, show=False, out_file='result.jpg')
+        #final_img = show_result_pyplot(self.model, filepath, result, score_thr=0.3, title='Detection result', wait_time=0)
+
+        if hasattr(self.model, 'module'):
+            mymodel = self.model.module
+        else:
+            mymodel = self.model
+        final_img = mymodel.show_result(
+            img=filepath,
+            result=result,
+            score_thr=score_thr,
+            show=False,
+            wait_time=0,
+            win_name="Detection result",
+            bbox_color=(72, 101, 241),
+            text_color=(72, 101, 241),
+            out_file=prediction_path  # save results on a specific file
+        )
 
         return result, final_img
 

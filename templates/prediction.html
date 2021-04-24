@@ -1,12 +1,203 @@
 <!DOCTYPE html>
 <html>
-  <center><h1>Food Recognition Challenge</h1></center>
-  <center><h4>Can AI guess what you are eating ?</h4></center>
   <head>
     <link rel="stylesheet" href="static/styles/styles.css">
+    <script>
+      //Build an array containing Customer records.
+            var food_categories = [
+              {'name': 'water', 'name_readable': 'Water', 'example_file': '065537.jpg'},
+              {'name': 'pear', 'name_readable': 'Pear', 'example_file': '017920.jpg'},
+              {'name': 'egg', 'name_readable': 'Egg', 'example_file': '051203.jpg'},
+              {'name': 'grapes', 'name_readable': 'Grapes', 'example_file': '061456.jpg'},
+              {'name': 'butter', 'name_readable': 'Butter', 'example_file': '077824.jpg'},
+              {'name': 'bread-white', 'name_readable': 'Bread, white', 'example_file': '024578.jpg'},
+              {'name': 'jam', 'name_readable': 'Jam', 'example_file': '096257.jpg'},
+              {'name': 'bread-whole-wheat', 'name_readable': 'Bread, whole wheat', 'example_file': '046081.jpg'},
+              {'name': 'apple', 'name_readable': 'Apple', 'example_file': '075788.jpg'},
+              {'name': 'tea-green', 'name_readable': 'Tea, green', 'example_file': '034308.jpg'},
+              {'name': 'white-coffee-with-caffeine', 'name_readable': 'White coffee, with caffeine', 'example_file': '077313.jpg'},
+              {'name': 'tea-black', 'name_readable': 'Tea, black', 'example_file': '102925.jpg'},
+              {'name': 'mixed-salad-chopped-without-sauce', 'name_readable': 'Mixed salad (chopped without sauce)', 'example_file': '010242.jpg'},
+              {'name': 'cheese', 'name_readable': 'Cheese', 'example_file': '077829.jpg'},
+              {'name': 'tomato-sauce', 'name_readable': 'Tomato sauce', 'example_file': '031751.jpg'},
+              {'name': 'pasta-spaghetti', 'name_readable': 'Pasta, spaghetti', 'example_file': '052224.jpg'},
+              {'name': 'carrot', 'name_readable': 'Carrot', 'example_file': '020481.jpg'},
+              {'name': 'onion', 'name_readable': 'Onion', 'example_file': '033283.jpg'},
+              {'name': 'beef-cut-into-stripes-only-meat', 'name_readable': 'Beef, cut into stripes (only meat)', 'example_file': '073859.jpg'},
+              {'name': 'rice-noodles-vermicelli', 'name_readable': 'Rice noodles/vermicelli', 'example_file': '024960.jpg'},
+              {'name': 'salad-leaf-salad-green', 'name_readable': 'Salad, leaf / salad, green', 'example_file': '077826.jpg'},
+              {'name': 'bread-grain', 'name_readable': 'Bread, grain', 'example_file': '015875.jpg'},
+              {'name': 'espresso-with-caffeine', 'name_readable': 'Espresso, with caffeine', 'example_file': '010251.jpg'},
+              {'name': 'banana', 'name_readable': 'Banana', 'example_file': '094210.jpg'},
+              {'name': 'mixed-vegetables', 'name_readable': 'Mixed vegetables', 'example_file': '010240.jpg'},
+              {'name': 'bread-wholemeal', 'name_readable': 'Bread, wholemeal', 'example_file': '077824.jpg'},
+              {'name': 'savoury-puff-pastry', 'name_readable': 'Savoury puff pastry', 'example_file': '072194.jpg'},
+              {'name': 'wine-white', 'name_readable': 'Wine, white', 'example_file': '103936.jpg'},
+              {'name': 'dried-meat', 'name_readable': 'Dried meat', 'example_file': '041985.jpg'},
+              {'name': 'fresh-cheese', 'name_readable': 'Fresh cheese', 'example_file': '103941.jpg'},
+              {'name': 'red-radish', 'name_readable': 'Red radish', 'example_file': '057352.jpg'},
+              {'name': 'hard-cheese', 'name_readable': 'Hard cheese', 'example_file': '096257.jpg'},
+              {'name': 'ham-raw', 'name_readable': 'Ham, raw', 'example_file': '035843.jpg'},
+              {'name': 'bread-fruit', 'name_readable': 'Bread, fruit', 'example_file': '081922.jpg'},
+              {'name': 'oil-vinegar-salad-dressing', 'name_readable': 'Oil & vinegar salad dressing', 'example_file': '097665.jpg'},
+              {'name': 'tomato', 'name_readable': 'Tomato', 'example_file': '053251.jpg'},
+              {'name': 'cauliflower', 'name_readable': 'Cauliflower', 'example_file': '072193.jpg'},
+              {'name': 'potato-gnocchi', 'name_readable': 'Potato-gnocchi', 'example_file': '061698.jpg'},
+              {'name': 'wine-red', 'name_readable': 'Wine, red', 'example_file': '016389.jpg'},
+              {'name': 'sauce-cream', 'name_readable': 'Sauce, cream', 'example_file': '011265.jpg'},
+              {'name': 'pasta-linguini-parpadelle-tagliatelle', 'name_readable': 'Pasta, linguini, parpadelle, Tagliatelle', 'example_file': '014081.jpg'},
+              {'name': 'french-beans', 'name_readable': 'French beans', 'example_file': '010240.jpg'},
+              {'name': 'almonds', 'name_readable': 'Almonds', 'example_file': '023553.jpg'},
+              {'name': 'dark-chocolate', 'name_readable': 'Dark chocolate', 'example_file': '043010.jpg'},
+              {'name': 'mandarine', 'name_readable': 'Mandarine', 'example_file': '070658.jpg'},
+              {'name': 'semi-hard-cheese', 'name_readable': 'Semi-hard cheese', 'example_file': '096257.jpg'},
+              {'name': 'croissant', 'name_readable': 'Croissant', 'example_file': '070663.jpg'},
+              {'name': 'sushi', 'name_readable': 'Sushi', 'example_file': '023296.jpg'},
+              {'name': 'berries', 'name_readable': 'Berries', 'example_file': '096128.jpg'},
+              {'name': 'biscuits', 'name_readable': 'Biscuits', 'example_file': '009728.jpg'},
+              {'name': 'thickened-cream-35', 'name_readable': 'Thickened cream (> 35%)', 'example_file': '069887.jpg'},
+              {'name': 'corn', 'name_readable': 'Corn', 'example_file': '043522.jpg'},
+              {'name': 'celeriac', 'name_readable': 'Celeriac', 'example_file': '039171.jpg'},
+              {'name': 'alfa-sprouts', 'name_readable': 'Alfa sprouts', 'example_file': '103172.jpg'},
+              {'name': 'chickpeas', 'name_readable': 'Chickpeas', 'example_file': '093184.jpg'},
+              {'name': 'leaf-spinach', 'name_readable': 'Leaf spinach', 'example_file': '015360.jpg'},
+              {'name': 'rice', 'name_readable': 'Rice', 'example_file': '090115.jpg'},
+              {'name': 'chocolate-cookies', 'name_readable': 'Chocolate cookies', 'example_file': '036609.jpg'},
+              {'name': 'pineapple', 'name_readable': 'Pineapple', 'example_file': '097025.jpg'},
+              {'name': 'tart', 'name_readable': 'Tart', 'example_file': '071169.jpg'},
+              {'name': 'coffee-with-caffeine', 'name_readable': 'Coffee, with caffeine', 'example_file': '030723.jpg'},
+              {'name': 'focaccia', 'name_readable': 'Focaccia', 'example_file': '051968.jpg'},
+              {'name': 'pizza-with-vegetables-baked', 'name_readable': 'Pizza, with vegetables, baked', 'example_file': '039808.jpg'},
+              {'name': 'soup-vegetable', 'name_readable': 'Soup, vegetable', 'example_file': '013313.jpg'},
+              {'name': 'bread-toast', 'name_readable': 'Bread, toast', 'example_file': '042240.jpg'},
+              {'name': 'potatoes-steamed', 'name_readable': 'Potatoes steamed', 'example_file': '016387.jpg'},
+              {'name': 'spaetzle', 'name_readable': 'Spaetzle', 'example_file': '057601.jpg'},
+              {'name': 'frying-sausage', 'name_readable': 'Frying sausage', 'example_file': '093827.jpg'},
+              {'name': 'lasagne-meat-prepared', 'name_readable': 'Lasagne, meat, prepared', 'example_file': '072832.jpg'},
+              {'name': 'boisson-au-glucose-50g', 'name_readable': 'Boisson au glucose 50g', 'example_file': '095235.jpg'},
+              {'name': 'ma1-4esli', 'name_readable': 'MÃ¼esli', 'example_file': '094208.jpg'},
+              {'name': 'peanut-butter', 'name_readable': 'Peanut butter', 'example_file': '094720.jpg'},
+              {'name': 'chips-french-fries', 'name_readable': 'Chips, french fries', 'example_file': '034816.jpg'},
+              {'name': 'mushroom', 'name_readable': 'Mushroom', 'example_file': '027776.jpg'},
+              {'name': 'ratatouille', 'name_readable': 'Ratatouille', 'example_file': '097792.jpg'},
+              {'name': 'veggie-burger', 'name_readable': 'Veggie burger', 'example_file': '025351.jpg'},
+              {'name': 'country-fries', 'name_readable': 'Country fries', 'example_file': '072707.jpg'},
+              {'name': 'yaourt-yahourt-yogourt-ou-yoghourt-natural', 'name_readable': 'Yaourt, yahourt, yogourt ou yoghourt, natural', 'example_file': '097284.jpg'},
+               {'name': 'hummus', 'name_readable': 'Hummus', 'example_file': '067079.jpg'},
+              {'name': 'fish', 'name_readable': 'Fish', 'example_file': '030210.jpg'},
+              {'name': 'beer', 'name_readable': 'Beer', 'example_file': '093185.jpg'},
+              {'name': 'peanut', 'name_readable': 'Peanut', 'example_file': '069120.jpg'},
+              {'name': 'pizza-margherita-baked', 'name_readable': 'Pizza, Margherita, baked', 'example_file': '035843.jpg'},
+              {'name': 'pickle', 'name_readable': 'Pickle', 'example_file': '043522.jpg'},
+              {'name': 'ham-cooked', 'name_readable': 'Ham, cooked', 'example_file': '087043.jpg'},
+              {'name': 'cake-chocolate', 'name_readable': 'Cake, chocolate', 'example_file': '008192.jpg'},
+              {'name': 'bread-french-white-flour', 'name_readable': 'Bread, French (white flour)', 'example_file': '068618.jpg'},
+              {'name': 'sauce-mushroom', 'name_readable': 'Sauce, mushroom', 'example_file': '024452.jpg'},
+              {'name': 'rice-basmati', 'name_readable': 'Rice, Basmati', 'example_file': '040321.jpg'},
+              {'name': 'soup-of-lentils-dahl-dhal', 'name_readable': 'Soup of lentils, Dahl (Dhal) ', 'example_file': '098941.jpg'},
+              {'name': 'pumpkin', 'name_readable': 'Pumpkin', 'example_file': '009344.jpg'},
+              {'name': 'witloof-chicory', 'name_readable': 'Witloof chicory', 'example_file': '074252.jpg'},
+              {'name': 'vegetable-au-gratin-baked', 'name_readable': 'Vegetable au gratin, baked', 'example_file': '048256.jpg'},
+              {'name': 'balsamic-salad-dressing', 'name_readable': 'Balsamic salad dressing', 'example_file': '015360.jpg'},
+              {'name': 'pasta-penne', 'name_readable': 'Pasta, penne', 'example_file': '075777.jpg'},
+              {'name': 'tea-peppermint', 'name_readable': 'Tea, peppermint', 'example_file': '102403.jpg'},
+              {'name': 'soup-pumpkin', 'name_readable': 'Soup, pumpkin', 'example_file': '007428.jpg'},
+              {'name': 'quiche-with-cheese-baked-with-puff-pastry', 'name_readable': 'Quiche, with cheese, baked, with puff pastry', 'example_file': '022273.jpg'},
+              {'name': 'mango', 'name_readable': 'Mango', 'example_file': '014977.jpg'},
+              {'name': 'green-bean-steamed-without-addition-of-salt', 'name_readable': 'Green bean, steamed, without addition of salt', 'example_file': '083978.jpg'},
+              {'name': 'cucumber', 'name_readable': 'Cucumber', 'example_file': '071683.jpg'},
+              {'name': 'bread-half-white', 'name_readable': 'Bread, half white', 'example_file': '099968.jpg'},
+              {'name': 'pasta', 'name_readable': 'Pasta', 'example_file': '010240.jpg'},
+              {'name': 'beef-filet', 'name_readable': 'Beef, filet', 'example_file': '015360.jpg'},
+              {'name': 'pasta-twist', 'name_readable': 'Pasta, twist', 'example_file': '052227.jpg'},
+              {'name': 'pasta-wholemeal', 'name_readable': 'Pasta, wholemeal', 'example_file': '070144.jpg'},
+              {'name': 'walnut', 'name_readable': 'Walnut', 'example_file': '065025.jpg'},
+              {'name': 'soft-cheese', 'name_readable': 'Soft cheese', 'example_file': '096257.jpg'},
+              {'name': 'salmon-smoked', 'name_readable': 'Salmon, smoked', 'example_file': '032769.jpg'},
+              {'name': 'sweet-pepper', 'name_readable': 'Sweet pepper', 'example_file': '057347.jpg'},
+              {'name': 'sauce-soya', 'name_readable': 'Sauce, soya', 'example_file': '053633.jpg'},
+              {'name': 'chicken-breast', 'name_readable': 'Chicken, breast', 'example_file': '026115.jpg'},
+              {'name': 'rice-whole-grain', 'name_readable': 'Rice, whole-grain', 'example_file': '046976.jpg'},
+              {'name': 'bread-nut', 'name_readable': 'Bread, nut', 'example_file': '023937.jpg'},
+              {'name': 'green-olives', 'name_readable': 'Green olives', 'example_file': '029188.jpg'},
+              {'name': 'roll-of-half-white-or-white-flour-with-large-void', 'name_readable': 'Roll of half-white or white flour, with large void', 'example_file': '042242.jpg'},
+              {'name': 'parmesan', 'name_readable': 'Parmesan', 'example_file': '082945.jpg'},
+              {'name': 'cappuccino', 'name_readable': 'Cappuccino', 'example_file': '035844.jpg'},
+              {'name': 'flakes-oat', 'name_readable': 'Flakes, oat', 'example_file': '026496.jpg'},
+              {'name': 'mayonnaise', 'name_readable': 'Mayonnaise', 'example_file': '033283.jpg'},
+              {'name': 'chicken', 'name_readable': 'Chicken', 'example_file': '072707.jpg'},
+              {'name': 'cheese-for-raclette', 'name_readable': 'Cheese for raclette', 'example_file': '034434.jpg'},
+              {'name': 'orange', 'name_readable': 'Orange', 'example_file': '029188.jpg'},
+              {'name': 'goat-cheese-soft', 'name_readable': 'Goat cheese (soft)', 'example_file': '053765.jpg'},
+              {'name': 'tuna', 'name_readable': 'Tuna', 'example_file': '072192.jpg'},
+              {'name': 'tomme', 'name_readable': 'Tomme', 'example_file': '035713.jpg'},
+              {'name': 'apple-pie', 'name_readable': 'Apple pie', 'example_file': '076808.jpg'},
+              {'name': 'rosti', 'name_readable': 'Rosti', 'example_file': '102151.jpg'},
+              {'name': 'broccoli', 'name_readable': 'Broccoli', 'example_file': '081920.jpg'},
+              {'name': 'beans-kidney', 'name_readable': 'Beans, kidney', 'example_file': '090624.jpg'},
+              {'name': 'white-cabbage', 'name_readable': 'White cabbage', 'example_file': '088070.jpg'},
+              {'name': 'ketchup', 'name_readable': 'Ketchup', 'example_file': '101378.jpg'},
+              {'name': 'salt-cake-vegetables-filled', 'name_readable': 'Salt cake (vegetables, filled) ', 'example_file': '024704.jpg'},
+              {'name': 'pistachio', 'name_readable': 'Pistachio', 'example_file': '007425.jpg'},
+              {'name': 'feta', 'name_readable': 'Feta', 'example_file': '064001.jpg'},
+              {'name': 'salmon', 'name_readable': 'Salmon', 'example_file': '012802.jpg'},
+              {'name': 'avocado', 'name_readable': 'Avocado', 'example_file': '041985.jpg'},
+              {'name': 'sauce-pesto', 'name_readable': 'Sauce, pesto', 'example_file': '013824.jpg'},
+              {'name': 'salad-rocket', 'name_readable': 'Salad, rocket', 'example_file': '093184.jpg'},
+              {'name': 'pizza-with-ham-baked', 'name_readable': 'Pizza, with ham, baked', 'example_file': '098820.jpg'},
+              {'name': 'gruya-re', 'name_readable': 'GruyÃ¨re', 'example_file': '015364.jpg'},
+              {'name': 'ristretto-with-caffeine', 'name_readable': 'Ristretto, with caffeine', 'example_file': '026368.jpg'},
+              {'name': 'risotto-without-cheese-cooked', 'name_readable': 'Risotto, without cheese, cooked', 'example_file': '100864.jpg'},
+              {'name': 'crunch-ma1-4esli', 'name_readable': 'Crunch MÃ¼esli', 'example_file': '044929.jpg'},
+              {'name': 'braided-white-loaf', 'name_readable': 'Braided white loaf', 'example_file': '089094.jpg'},
+              {'name': 'peas', 'name_readable': 'Peas', 'example_file': '076166.jpg'},
+              {'name': 'chicken-curry-cream-coconut-milk-curry-spices-paste', 'name_readable': 'Chicken curry (cream/coconut milk. curry spices/paste))', 'example_file': '093187.jpg'},
+              {'name': 'bolognaise-sauce', 'name_readable': 'Bolognaise sauce', 'example_file': '088068.jpg'}, {'name': 'bacon-frying', 'name_readable': 'Bacon, frying', 'example_file': '069636.jpg'}, {'name': 'salami', 'name_readable': 'Salami', 'example_file': '077824.jpg'}, {'name': 'lentils', 'name_readable': 'Lentils', 'example_file': '071170.jpg'}, {'name': 'mushrooms', 'name_readable': 'Mushrooms', 'example_file': '008202.jpg'}, {'name': 'mashed-potatoes-prepared-with-full-fat-milk-with-butter', 'name_readable': 'Mashed potatoes, prepared, with full fat milk, with butter', 'example_file': '075275.jpg'}, {'name': 'fennel', 'name_readable': 'Fennel', 'example_file': '078857.jpg'}, {'name': 'chocolate-mousse', 'name_readable': 'Chocolate mousse', 'example_file': '008192.jpg'}, {'name': 'corn-crisps', 'name_readable': 'Corn crisps', 'example_file': '020480.jpg'}, {'name': 'sweet-potato', 'name_readable': 'Sweet potato', 'example_file': '033280.jpg'}, {'name': 'bircherma1-4esli-prepared-no-sugar-added', 'name_readable': 'BirchermÃ¼esli, prepared, no sugar added', 'example_file': '028168.jpg'}, {'name': 'beetroot-steamed-without-addition-of-salt', 'name_readable': 'Beetroot, steamed, without addition of salt', 'example_file': '071170.jpg'}, {'name': 'sauce-savoury', 'name_readable': 'Sauce (savoury)', 'example_file': '024069.jpg'}, {'name': 'leek', 'name_readable': 'Leek', 'example_file': '024960.jpg'}, {'name': 'milk', 'name_readable': 'Milk', 'example_file': '017408.jpg'}, {'name': 'tea', 'name_readable': 'Tea', 'example_file': '036875.jpg'}, {'name': 'fruit-salad', 'name_readable': 'Fruit salad ', 'example_file': '051719.jpg'}, {'name': 'bread-rye', 'name_readable': 'Bread, rye', 'example_file': '061830.jpg'}, {'name': 'salad-lambs-ear', 'name_readable': "Salad, lambs' ear", 'example_file': '072707.jpg'}, {'name': 'potatoes-au-gratin-dauphinois-prepared', 'name_readable': 'Potatoes au gratin, dauphinois, prepared', 'example_file': '010497.jpg'}, {'name': 'red-cabbage', 'name_readable': 'Red cabbage', 'example_file': '079105.jpg'}, {'name': 'praline', 'name_readable': 'Praline', 'example_file': '017411.jpg'}, {'name': 'bread-black', 'name_readable': 'Bread, black', 'example_file': '079364.jpg'}, {'name': 'black-olives', 'name_readable': 'Black olives', 'example_file': '098820.jpg'}, {'name': 'mozzarella', 'name_readable': 'Mozzarella', 'example_file': '052224.jpg'}, {'name': 'bacon-cooking', 'name_readable': 'Bacon, cooking', 'example_file': '041601.jpg'}, {'name': 'pomegranate', 'name_readable': 'Pomegranate', 'example_file': '029569.jpg'}, {'name': 'hamburger-bread-meat-ketchup', 'name_readable': 'Hamburger (Bread, meat, ketchup)', 'example_file': '033283.jpg'}, {'name': 'curry-vegetarian', 'name_readable': 'Curry, vegetarian', 'example_file': '079878.jpg'}, {'name': 'honey', 'name_readable': 'Honey', 'example_file': '050182.jpg'}, {'name': 'juice-orange', 'name_readable': 'Juice, orange', 'example_file': '052228.jpg'}, {'name': 'cookies', 'name_readable': 'Cookies', 'example_file': '075776.jpg'}, {'name': 'mixed-nuts', 'name_readable': 'Mixed nuts', 'example_file': '076811.jpg'}, {'name': 'breadcrumbs-unspiced', 'name_readable': 'Breadcrumbs (unspiced)', 'example_file': '057601.jpg'}, {'name': 'chicken-leg', 'name_readable': 'Chicken, leg', 'example_file': '014849.jpg'}, {'name': 'raspberries', 'name_readable': 'Raspberries', 'example_file': '044032.jpg'}, {'name': 'beef-sirloin-steak', 'name_readable': 'Beef, sirloin steak', 'example_file': '048768.jpg'}, {'name': 'salad-dressing', 'name_readable': 'Salad dressing', 'example_file': '081923.jpg'}, {'name': 'shrimp-prawn-large', 'name_readable': 'Shrimp / prawn (large)', 'example_file': '079878.jpg'}, {'name': 'sour-cream', 'name_readable': 'Sour cream', 'example_file': '019328.jpg'}, {'name': 'greek-salad', 'name_readable': 'Greek salad', 'example_file': '053376.jpg'}, {'name': 'sauce-roast', 'name_readable': 'Sauce, roast', 'example_file': '010240.jpg'}, {'name': 'zucchini', 'name_readable': 'Zucchini', 'example_file': '028169.jpg'}, {'name': 'greek-yaourt-yahourt-yogourt-ou-yoghourt', 'name_readable': 'Greek Yaourt, yahourt, yogourt ou yoghourt', 'example_file': '076421.jpg'}, {'name': 'cashew-nut', 'name_readable': 'Cashew nut', 'example_file': '029568.jpg'}, {'name': 'meat-terrine-pata-c', 'name_readable': 'Meat terrine, patÃ©', 'example_file': '028288.jpg'}, {'name': 'chicken-cut-into-stripes-only-meat', 'name_readable': 'Chicken, cut into stripes (only meat)', 'example_file': '013061.jpg'}, {'name': 'couscous', 'name_readable': 'Couscous', 'example_file': '039681.jpg'}, {'name': 'bread-wholemeal-toast', 'name_readable': 'Bread, wholemeal toast', 'example_file': '077442.jpg'}, {'name': 'craape-plain', 'name_readable': 'CrÃªpe, plain', 'example_file': '094213.jpg'}, {'name': 'bread-5-grain', 'name_readable': 'Bread, 5-grain', 'example_file': '029444.jpg'}, {'name': 'tofu', 'name_readable': 'Tofu', 'example_file': '013313.jpg'}, {'name': 'water-mineral', 'name_readable': 'Water, mineral', 'example_file': '035842.jpg'}, {'name': 'ham-croissant', 'name_readable': 'Ham croissant', 'example_file': '068868.jpg'}, {'name': 'juice-apple', 'name_readable': 'Juice, apple', 'example_file': '023686.jpg'}, {'name': 'falafel-balls', 'name_readable': 'Falafel (balls)', 'example_file': '102289.jpg'}, {'name': 'egg-scrambled-prepared', 'name_readable': 'Egg, scrambled, prepared', 'example_file': '099968.jpg'}, {'name': 'brioche', 'name_readable': 'Brioche', 'example_file': '018951.jpg'}, {'name': 'bread-pita', 'name_readable': 'Bread, pita', 'example_file': '097536.jpg'}, {'name': 'pasta-haprnli', 'name_readable': 'Pasta, HÃ¶rnli', 'example_file': '032130.jpg'}, {'name': 'blue-mould-cheese', 'name_readable': 'Blue mould cheese', 'example_file': '033027.jpg'}, {'name': 'vegetable-mix-peas-and-carrots', 'name_readable': 'Vegetable mix, peas and carrots', 'example_file': '008070.jpg'}, {'name': 'quinoa', 'name_readable': 'Quinoa', 'example_file': '086544.jpg'}, {'name': 'crisps', 'name_readable': 'Crisps', 'example_file': '009217.jpg'}, {'name': 'beef', 'name_readable': 'Beef', 'example_file': '033797.jpg'}, {'name': 'butter-spread-puree-almond', 'name_readable': 'Butter, spread, puree almond', 'example_file': '027776.jpg'}, {'name': 'beef-minced-only-meat', 'name_readable': 'Beef, minced (only meat)', 'example_file': '023813.jpg'}, {'name': 'hazelnut-chocolate-spread-nutella-ovomaltine-caotina', 'name_readable': 'Hazelnut-chocolate spread(Nutella, Ovomaltine, Caotina)', 'example_file': '062979.jpg'}, {'name': 'chocolate', 'name_readable': 'Chocolate', 'example_file': '038314.jpg'}, {'name': 'nectarine', 'name_readable': 'Nectarine', 'example_file': '042752.jpg'}, {'name': 'ice-tea', 'name_readable': 'Ice tea ', 'example_file': '045824.jpg'}, {'name': 'applesauce-unsweetened-canned', 'name_readable': 'Applesauce, unsweetened, canned', 'example_file': '064002.jpg'}, {'name': 'syrup-diluted-ready-to-drink', 'name_readable': 'Syrup (diluted, ready to drink)', 'example_file': '038785.jpg'}, {'name': 'sugar-melon', 'name_readable': 'Sugar Melon ', 'example_file': '051204.jpg'}, {'name': 'bread-sourdough', 'name_readable': 'Bread, sourdough', 'example_file': '082938.jpg'}, {'name': 'rusk-wholemeal', 'name_readable': 'Rusk, wholemeal', 'example_file': '074886.jpg'}, {'name': 'gluten-free-bread', 'name_readable': 'Gluten-free bread', 'example_file': '051840.jpg'}, {'name': 'shrimp-prawn-small', 'name_readable': 'Shrimp / prawn (small)', 'example_file': '081923.jpg'}, {'name': 'french-salad-dressing', 'name_readable': 'French salad dressing', 'example_file': '071685.jpg'}, {'name': 'pancakes', 'name_readable': 'Pancakes', 'example_file': '051456.jpg'}, {'name': 'milk-chocolate', 'name_readable': 'Milk chocolate', 'example_file': '026371.jpg'}, {'name': 'pork', 'name_readable': 'Pork', 'example_file': '074881.jpg'}, {'name': 'dairy-ice-cream', 'name_readable': 'Dairy ice cream', 'example_file': '077312.jpg'}, {'name': 'guacamole', 'name_readable': 'Guacamole', 'example_file': '009217.jpg'}, {'name': 'sausage', 'name_readable': 'Sausage', 'example_file': '013440.jpg'}, {'name': 'herbal-tea', 'name_readable': 'Herbal tea', 'example_file': '008716.jpg'}, {'name': 'fruit-coulis', 'name_readable': 'Fruit coulis', 'example_file': '079107.jpg'}, {'name': 'water-with-lemon-juice', 'name_readable': 'Water with lemon juice', 'example_file': '051200.jpg'}, {'name': 'brownie', 'name_readable': 'Brownie', 'example_file': '038407.jpg'}, {'name': 'lemon', 'name_readable': 'Lemon', 'example_file': '057601.jpg'}, {'name': 'veal-sausage', 'name_readable': 'Veal sausage', 'example_file': '040576.jpg'}, {'name': 'dates', 'name_readable': 'Dates', 'example_file': '010625.jpg'}, {'name': 'roll-with-pieces-of-chocolate', 'name_readable': 'Roll with pieces of chocolate', 'example_file': '083712.jpg'}, {'name': 'taboula-c-prepared-with-couscous', 'name_readable': 'TaboulÃ©, prepared, with couscous', 'example_file': '064260.jpg'}, {'name': 'croissant-with-chocolate-filling', 'name_readable': 'Croissant with chocolate filling', 'example_file': '046849.jpg'}, {'name': 'eggplant', 'name_readable': 'Eggplant', 'example_file': '014849.jpg'}, {'name': 'sesame-seeds', 'name_readable': 'Sesame seeds', 'example_file': '029569.jpg'}, {'name': 'cottage-cheese', 'name_readable': 'Cottage cheese', 'example_file': '036867.jpg'}, {'name': 'fruit-tart', 'name_readable': 'Fruit tart', 'example_file': '033153.jpg'}, {'name': 'cream-cheese', 'name_readable': 'Cream cheese', 'example_file': '061830.jpg'}, {'name': 'tea-verveine', 'name_readable': 'Tea, verveine', 'example_file': '084610.jpg'}, {'name': 'tiramisu', 'name_readable': 'Tiramisu', 'example_file': '024320.jpg'}, {'name': 'grits-polenta-maize-flour', 'name_readable': 'Grits, polenta, maize flour', 'example_file': '070402.jpg'}, {'name': 'pasta-noodles', 'name_readable': 'Pasta, noodles', 'example_file': '089348.jpg'}, {'name': 'artichoke', 'name_readable': 'Artichoke', 'example_file': '079362.jpg'}, {'name': 'blueberries', 'name_readable': 'Blueberries', 'example_file': '044032.jpg'}, {'name': 'mixed-seeds', 'name_readable': 'Mixed seeds', 'example_file': '051201.jpg'}, {'name': 'caprese-salad-tomato-mozzarella', 'name_readable': 'Caprese salad (Tomato Mozzarella)', 'example_file': '034824.jpg'}, {'name': 'omelette-plain', 'name_readable': 'Omelette, plain', 'example_file': '101378.jpg'}, {'name': 'hazelnut', 'name_readable': 'Hazelnut', 'example_file': '015488.jpg'}, {'name': 'kiwi', 'name_readable': 'Kiwi', 'example_file': '034308.jpg'}, {'name': 'dried-raisins', 'name_readable': 'Dried raisins', 'example_file': '036482.jpg'}, {'name': 'kolhrabi', 'name_readable': 'Kolhrabi', 'example_file': '026626.jpg'}, {'name': 'plums', 'name_readable': 'Plums', 'example_file': '034435.jpg'}, {'name': 'beetroot-raw', 'name_readable': 'Beetroot, raw', 'example_file': '104194.jpg'}, {'name': 'cream', 'name_readable': 'Cream', 'example_file': '098818.jpg'}, {'name': 'fajita-bread-only', 'name_readable': 'Fajita (bread only)', 'example_file': '078471.jpg'}, {'name': 'apricots', 'name_readable': 'Apricots', 'example_file': '022019.jpg'}, {'name': 'kefir-drink', 'name_readable': 'Kefir drink', 'example_file': '027265.jpg'}, {'name': 'bread', 'name_readable': 'Bread', 'example_file': '098946.jpg'}, {'name': 'strawberries', 'name_readable': 'Strawberries', 'example_file': '098819.jpg'}, {'name': 'wine-rosa-c', 'name_readable': 'Wine, rosÃ©', 'example_file': '021890.jpg'}, {'name': 'watermelon-fresh', 'name_readable': 'Watermelon, fresh', 'example_file': '049282.jpg'}, {'name': 'green-asparagus', 'name_readable': 'Green asparagus', 'example_file': '100864.jpg'}, {'name': 'white-asparagus', 'name_readable': 'White asparagus', 'example_file': '089345.jpg'}, {'name': 'peach', 'name_readable': 'Peach', 'example_file': '039685.jpg'}]
+;
+
+            var ddlCategories = document.getElementById("categorySelect");
+
+            //Add the Options to the DropDownList.
+            for (var i = 0; i < food_categories.length; i++) {
+                var option = document.createElement("OPTION");
+
+                //Set Name in Text part.
+                option.innerHTML = food_categories[i]['name_readable'];
+
+                //Set Name in Value part.
+                option.value = customers[i]['name'];
+
+                //Set FileName in Value part.
+                option.data-filename = customers[i]['example_file'];
+
+                //Add the Option element to DropDownList.
+                ddlCategories.options.add(option);
+            }
+    </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
   </head>
   <body>
-      
+    <center><h1>Food Online Instance Segmentation</h1></center>
+    <center><h4>Can AI guess what you are eating ?</h4></center>
+    <div id="params_div">
+      <div id="class_list_div">
+        <div style="float: left; width: 50%">Food categories recognized:</div>
+        <div style="float: right; width: 50%" class="dropdown">
+           <select id="categorySelect" placeholder="Explore categoires...">
+            </select>
+        </div>
+      </div>
+      <div id="score_thr_list_div">
+        <div style="float: left; width: 50%">Score treshold for model inference:</div>
+       <div style="float: right; width: 50%">
+         <form method="POST">
+           <input type="number" id="score_thr_number" name="score_treshold" min="0" max="1" step="0.1" value="0.3">
+         </form>
+       </div>
+      </div>
+    </div>
     <div id="container">
         <div id="fileupload">
             <center>
@@ -17,19 +208,34 @@
                 {{ dropzone.load_js() }}
                 {{ dropzone.config() }}
              </center>
-
         </div>
         <div id="prediction">
             <center>
                 <h1>Predicted Output</h1>
-                <img src="static/prediction.png" width="400" height="400"/>
+                <img src="upload/inference_response.jpg" width="400" height="400"/>
             </center>    
         </div>
     </div>
-    <center>
-        <input type="button" onclick="CreateTableFromJSON()" value="View Detailed Results" />
-        <p id="showData"></p>
-    </center>
+<!--    <center>-->
+<!--        <input type="button" onclick="CreateTableFromJSON()" value="View Detailed Results" />-->
+<!--        <p id="showData"></p>-->
+<!--    </center>-->
+
+    <footer class="footer-distributed">
+        <div class="footer-right">
+            <img src="assets/uni_logo2.png" alt="Unibo logo" width="100" height="100">
+        </div>
+
+        <div class="footer-left">
+            <p class="footer-links">
+                <a class="link-1" href="#">Machine Learning Project</a>
+                <a href="#">Daniele Filippini</a>
+                <a href="#">daniele.filippini2@studio.unibo.it</a>
+            </p>
+            <p>Alma Mater Studiorum - University of Bologna</p>
+        </div>
+    </footer>
+
     </body>
 
     <script>
