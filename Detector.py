@@ -26,7 +26,7 @@ class Detector:
 
         # build the model from a config file and a checkpoint file
         #self.model = init_detector(config_file, checkpoint_file, device='cuda:0')
-        self.model = init_detector(model_cfg_file, model_checkpoint, device='cpu')
+        self.model = init_detector(self.model_cfg_file, self.model_checkpoint, device='cpu')
 
 
     def inference(self, img_file):

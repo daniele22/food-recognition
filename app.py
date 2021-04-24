@@ -1,12 +1,13 @@
 from Detector import Detector
 import io
-from flask import Flask, render_template, request, send_from_directory, send_file
+from flask import Flask, render_template, request, send_from_directory, send_file, session
 from flask_dropzone import Dropzone
 from flask_ngrok import run_with_ngrok  # comment if not using colab
 from PIL import Image
 import requests
 import os
 import sys
+import imghdr
 from werkzeug.utils import secure_filename
 # for visualizing outputs
 import matplotlib.pyplot as plt
@@ -25,6 +26,7 @@ app.config['UPLOAD_PATH'] = 'uploads'
 #app.config['MODEL_PATH'] = 'model/mask_rcnn_food-challenge_0026.h5'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "thisisasupersecretkey"
+app.config['SECRET_KEY'] = "thisisasupersecretkey"
 
 app.config.update(
     DROPZONE_REDIRECT_VIEW='prediction',  # set redirect view
@@ -162,6 +164,15 @@ def upload_files():
             if file_ext not in app.config['UPLOAD_EXTENSIONS'] or \
                     file_ext != validate_image(uploaded_file.stream):
                 return "Invalid image", 400
+            try:
+                # save image as jpg
+                # urllib.request.urlretrieve(url, 'file.jpg')
+                rgb_im = load_image_url(url)
+                rgb_im = rgb_im.convert('RGB')
+                rgb_im.save('file.jpg')
+            # failure
+            except:
+                return "Invalid image file.jpg", 400
             response = predict_on_image(uploaded_file)
             print(response)
             session["response"] = response
