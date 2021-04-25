@@ -31,7 +31,7 @@ class Detector:
 
 
     def inference(self, filepath, prediction_path, score_thr):
-        result = inference_detector(self.model, filepath)
+        result = inference_detector(self.model, filepath, device="cpu")
         # show the results
         #final_img = show_result_pyplot(self.model, filepath, result, score_thr=0.3, title='Detection result', wait_time=0)
 
