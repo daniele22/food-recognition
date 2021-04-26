@@ -131,13 +131,13 @@ def validate_image(stream):
 def predict_on_image(uploaded_filepath):
     base_name = remove_ext(uploaded_filepath)
     prediction_path = app.config['UPLOAD_FOLDER'] + "/" + base_name + "_res.jpg"
-    result, final_img = detector.inference(uploaded_filepath, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
-    fig, ax = plt.subplots(figsize=(16, 16))
-    image = Image.open(prediction_path)
-    ax.imshow(image)
-    plt.show()
-    fig.savefig(prediction_path, bbox_inches='tight')  # save the figure to file
-    plt.close(fig)
+    result = detector.inference(uploaded_filepath, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
+    # fig, ax = plt.subplots(figsize=(16, 16))
+    # image = Image.open(prediction_path)
+    # ax.imshow(image)
+    # plt.show()
+    # fig.savefig(prediction_path, bbox_inches='tight')  # save the figure to file
+    # plt.close(fig)
     # global model
     # img = Image.open(uploaded_file)
     # img = np.array(img)
@@ -150,6 +150,7 @@ def predict_on_image(uploaded_filepath):
     #                             class_names, r['scores'],figsize=(16,16), ax=ax)
     # fig.savefig('static/prediction.png',bbox_inches='tight')   # save the figure to file
     # plt.close(fig)
+    # TODO extract info from results
     response = [{"food": "food_prova", "score": "0.55"}]
     # for p,scr in zip(results[0]['class_ids'],results[0]['scores']):
     #     response.append({"food":class_names[p],"score":str(scr)})
