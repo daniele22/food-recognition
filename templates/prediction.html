@@ -180,6 +180,7 @@
 
 
 
+
     </script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
@@ -196,6 +197,7 @@
 
 
 
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
@@ -203,57 +205,59 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
           integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"/>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 
 </head>
 <body>
 <center><h1>Food Online Instance Segmentation</h1></center>
 <center><h4>Can AI guess what you are eating ?</h4></center>
-<div id="params_div">
-    <div id="class_list_div">
-        <div style="float: left; width: 50%">Food categories recognized:</div>
-        <div style="float: right; width: 50%" class="dropdown">
-            <select id="categorySelect" placeholder="Explore categoires...">
-            </select>
+<div style="height: 750px">
+    <div id="params_div">
+        <div id="class_list_div">
+            <div style="float: left; width: 50%">Food categories recognized:</div>
+            <div style="float: right; width: 50%" class="dropdown">
+                <select id="categorySelect" placeholder="Explore categoires...">
+                </select>
+            </div>
+        </div>
+        <div id="score_thr_list_div">
+            <div style="float: left; width: 50%">Score treshold for model inference:</div>
+            <div style="float: right; width: 50%">
+                0.3
+            </div>
         </div>
     </div>
-    <div id="score_thr_list_div">
-        <div style="float: left; width: 50%">Score treshold for model inference:</div>
-        <div style="float: right; width: 50%">
-            0.3
-        </div>
-    </div>
-</div>
 
-<div>
-    <center>
-        <form>
-            <a href=# id=test>
-                <button class='btn btn-default'>Home</button>
-            </a>
-        </form>
-    </center>
-</div>
-
-<div id="container">
-
-
-    <div id="uploaded" style="float: left; width: 50%">
+    <div>
         <center>
-            <h1>Uploaded File</h1>
-            <img src={{filepath}} width="400" height="400"/>
-        </center>
-    </div>
-    <div id="prediction" style="float: right; width: 50%">
-        <center>
-            <h1>Predicted Output</h1>
-            <img src={{prediction_path}} width="400" height="400"/>
+            <form>
+                <a href=# id=test>
+                    <button class='btn btn-default'>Home</button>
+                </a>
+            </form>
         </center>
     </div>
 
-</div>
+    <div id="container">
 
+
+        <div id="uploaded" style="float: left; width: 50%">
+            <center>
+                <h1>Uploaded File</h1>
+                <img src={{filepath}} width="400" height="400"/>
+            </center>
+        </div>
+        <div id="prediction" style="float: right; width: 50%">
+            <center>
+                <h1>Predicted Output</h1>
+                <img src={{prediction_path}} width="400" height="400"/>
+            </center>
+        </div>
+
+    </div>
+
+</div>
 
 <footer class="footer-distributed">
     <div class="footer-right">
@@ -302,6 +306,7 @@ $(document).ready(function () {
 //change selectboxes to selectize mode to be searchable
    $("select").select2();
 });
+
 
 </script>
 
