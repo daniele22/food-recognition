@@ -24,7 +24,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
-app.config['UPLOAD_PATH'] = '/content/food-recongition/uploads'  # Ricordarsi che è lo stesso path che c'è in prediction.html
+app.config['UPLOAD_PATH'] = './food-recognition/uploads'   # Ricordarsi che è lo stesso path che c'è in prediction.html
 #app.config['MODEL_PATH'] = 'model/mask_rcnn_food-challenge_0026.h5'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "thisisasupersecretkey"
@@ -116,7 +116,7 @@ detector = Detector()
 #
 #     return send_file(file_object, mimetype='image/jpeg')
 
-
+#========================= UTILS FUN ======================================#
 def validate_image(stream):
     header = stream.read(512)
     stream.seek(0)
@@ -153,32 +153,32 @@ def predict_on_image(uploaded_file, score_threshold):
     #     response.append({"food":class_names[p],"score":str(scr)})
     return response
 
-
+#========================= APP FUN ======================================#
 @app.errorhandler(413)
 def too_large(e):
     return "File is too large", 413
 
-
-# @app.route('/uploads/<filename>')
-# def uploaded_file(filename):
-#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
 @app.route('/', methods=['GET', 'POST'])
 def upload_files():
+    print("upload files home.......")
     if request.method == "POST":
-        score_thr = request.form['score_treshold']
-        print("Score threshold = ", score_thr)
+        print("upload files POST")
         # check if the post request has the file part
         if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            print("No file path")
+            return "No file path", 204
         uploaded_file = request.files['file']
+        print("uploaded file:", uploaded_file)
         # if user does not select file, browser also submit an empty part without filename
         if uploaded_file != '':
+            print("uploaded file not null")
             filename = secure_filename(uploaded_file.filename) #check if the file is secure
+            print("uploaded filename:", filename)
             # check if the extension of the file is correct
             file_ext = os.path.splitext(filename)[1]
+            print("File extension:", file_ext)
             if file_ext not in app.config['UPLOAD_EXTENSIONS'] or file_ext != validate_image(uploaded_file.stream):
+                print("Error invalid extension ", file_ext)
                 return "Invalid image", 400
             # if the file extension is correct save the file on disk
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -186,7 +186,7 @@ def upload_files():
             uploaded_file.save(filepath)
             print("file saved")
             #file_url = url_for('uploaded_file', filename=filename)
-            response = predict_on_image(filepath, score_threshold=score_thr)
+            response = predict_on_image(filepath)
             print("response:", response)
             session["response"] = response
             return render_template("prediction.html", jsonfile=session["response"])
@@ -194,16 +194,17 @@ def upload_files():
             flash('No selected file')
             return redirect(request.url)
     else:
+        print("upload files GET")
         return render_template('index.html')
 
 
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
     if request.method == "GET":
+        print("prediction POST")
         return render_template("prediction.html", jsonfile=session["response"])
     else:
-        score_thr = request.form['score_treshold']
-        print("Score threshold = ", score_thr)
+        print("prediction GET")
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
@@ -222,7 +223,7 @@ def prediction():
             uploaded_file.save(filepath)
             print("file saved")
             # file_url = url_for('uploaded_file', filename=filename)
-            response = predict_on_image(filepath, score_threshold=score_thr)
+            response = predict_on_image(filepath)
             print("response:", response)
             session["response"] = response
             return render_template("prediction.html", jsonfile=session["response"])

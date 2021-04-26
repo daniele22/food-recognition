@@ -30,8 +30,9 @@ class Detector:
         self.model = init_detector(self.model_cfg_file, self.model_checkpoint, device='cpu')
 
 
-    def inference(self, filepath, prediction_path, score_thr):
-        result = inference_detector(self.model, filepath, device="cpu")
+    def inference(self, filepath, prediction_path, score_thr=0.3):
+        print("Inference detection on:", filepath, " - prediction in:", prediction_path)
+        result = inference_detector(self.model, filepath)
         # show the results
         #final_img = show_result_pyplot(self.model, filepath, result, score_thr=0.3, title='Detection result', wait_time=0)
 
@@ -50,6 +51,6 @@ class Detector:
             text_color=(72, 101, 241),
             out_file=prediction_path  # save results on a specific file
         )
-
+        print("End detection")
         return result, final_img
 

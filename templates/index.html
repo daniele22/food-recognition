@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <link rel="stylesheet" href="static/styles/styles.css">
     <script>
       //Build an array containing Customer records.
@@ -173,67 +173,77 @@
                 //Add the Option element to DropDownList.
                 ddlCategories.options.add(option);
             }
+
+
+
     </script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css" integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous" />
-  </head>
-  <body>
-    <center><h1>Food Online Instance Segmentation</h1></center>
-    <center><h4>Can AI guess what you are eating ?</h4></center>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+            integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+          integrity="sha256-ze/OEYGcFbPRmvCnrSeKbRTtjG4vGLHXgOqsyLFTRjg=" crossorigin="anonymous"/>
+</head>
+<body>
+<center><h1>Food Online Instance Segmentation</h1></center>
+<center><h4>Can AI guess what you are eating ?</h4></center>
+<div style="height: 750px">
     <div id="params_div">
-      <div id="class_list_div">
-        <div style="float: left; width: 50%">Food categories recognized:</div>
-        <div style="float: right; width: 50%" class="dropdown">
-           <select id="categorySelect" placeholder="Explore categoires...">
-            </select>
+        <div id="class_list_div">
+            <div style="float: left; width: 50%">Food categories recognized:</div>
+            <div style="float: right; width: 50%" class="dropdown">
+                <select id="categorySelect" placeholder="Explore categoires...">
+                </select>
+            </div>
         </div>
-      </div>
-      <div id="score_thr_list_div">
-        <div style="float: left; width: 50%">Score treshold for model inference:</div>
-       <div style="float: right; width: 50%">
-<!--         <form method="POST">-->
-<!--           <input type="number" id="score_thr_number" name="score_treshold" min="0" max="1" step="0.1" value="0.3">-->
-<!--         </form>-->
-       </div>
-      </div>
+        <div id="score_thr_list_div">
+            <div style="float: left; width: 50%">Score treshold for model inference:</div>
+            <div style="float: right; width: 50%">
+                <form method="POST">
+                    <input type="number" id="score_thr_number" name="score_treshold" min="0" max="1" step="0.1"
+                           value="0.3">
+                </form>
+            </div>
+        </div>
     </div>
-    <div id="fileupload" style="height: 750px">
-<!--      <center>-->
-<!--        <h1>File Upload</h1>-->
-<!--        {{ dropzone.load_css() }}-->
-<!--        {{ dropzone.style('border: 2px dashed #0087F7; margin: 5%; min-height: 400px; max-width:600px') }}  -->
-<!--        {{ dropzone.create(action='upload_files') }}-->
-<!--        {{ dropzone.load_js() }}-->
-<!--        {{ dropzone.config() }}-->
-<!--      </center>-->
-        <form action="{{ url_for('upload_files') }}" enctype="multipart/form-data" method="POST">
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title"/><br>
-            <label for="description">Description</label>
-            <input type="number" id="score_thr_number" name="score_treshold" min="0" max="1" step="0.1" value="0.3">
-            <input type="text" id="description" name="description"/><br>
+    <div id="fileupload">
+        <center>
+            <h1>File Upload</h1>
             {{ dropzone.load_css() }}
-            {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px; width: 800px') }}
-            {{ dropzone.create() }}
-            <input type="submit" id="submit" value="Submit and Upload">
-        </form>
+            {{ dropzone.style('border: 2px dashed #0087F7; margin: 5%; min-height: 400px; max-width:600px') }}
+            {{ dropzone.create(action='upload_files') }}
+            {{ dropzone.load_js() }}
+            {{ dropzone.config() }}
+        </center>
+        <!--        <form action="{{ url_for('handle_form') }}" enctype="multipart/form-data" method="POST">-->
+        <!--            <label for="title">Title</label>-->
+        <!--            <input type="text" id="title" name="title"/><br>-->
+        <!--            <label for="description">Description</label>-->
+        <!--            <input type="number" id="score_thr_number" name="score_thr_number" min="0" max="1" step="0.1" value="0.3">-->
+        <!--            <input type="text" id="description" name="description"/><br>-->
+        <!--            {{ dropzone.load_css() }}-->
+        <!--            {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px; width: 800px') }}-->
+        <!--            {{ dropzone.create() }}-->
+        <!--            <input type="submit" id="submit" value="Submit and Upload">-->
+        <!--        </form>-->
+        <!--        {{ dropzone.load_js() }}-->
+        <!--        {{ dropzone.config() }}-->
+    </div>
+</div>
+<footer class="footer-distributed">
+    <div class="footer-right">
+        <img src="assets/uni_logo2.png" alt="Unibo logo" width="100" height="100">
     </div>
 
-    <footer class="footer-distributed">
-        <div class="footer-right">
-            <img src="assets/uni_logo2.png" alt="Unibo logo" width="100" height="100">
-        </div>
+    <div class="footer-left">
+        <p class="footer-links">
+            <a class="link-1" href="#">Machine Learning Project</a>
+            <a href="#">Daniele Filippini</a>
+            <a href="#">daniele.filippini2@studio.unibo.it</a>
+        </p>
+        <p>Alma Mater Studiorum - University of Bologna</p>
+    </div>
+</footer>
 
-        <div class="footer-left">
-            <p class="footer-links">
-                <a class="link-1" href="#">Machine Learning Project</a>
-                <a href="#">Daniele Filippini</a>
-                <a href="#">daniele.filippini2@studio.unibo.it</a>
-            </p>
-            <p>Alma Mater Studiorum - University of Bologna</p>
-        </div>
-    </footer>
-
-  </body>
+</body>
 </html>
