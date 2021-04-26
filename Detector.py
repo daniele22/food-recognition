@@ -16,15 +16,16 @@ from mmdet.datasets import build_dataset
 from mmdet.models import build_detector
 from mmdet.apis import train_detector, inference_detector, show_result_pyplot, init_detector
 from mmdet.models.detectors import BaseDetector
+from mmcv import Config
 
 class Detector:
 
     def __init__(self):
         # config file name
-        self.model_cfg_file = '/content/mmdetection/configs/mask_rcnn/mask_rcnn_r50_fpn_1x_coco.py'
+        self.model_cfg_file = "/content/food-recognition/models/mask_rcnn_r50/mask_rcnn_r50.py"
         # get weights
         self.model_checkpoint = '/content/drive/MyDrive/ML/mask_rcnn_r50/epoch_8.pth'
-
+        #self.cfg = Config.fromfile("/content/food-recognition/models/mask_rcnn_r50/mask_rcnn_r50.py")
         # build the model from a config file and a checkpoint file
         #self.model = init_detector(config_file, checkpoint_file, device='cuda:0')
         self.model = init_detector(self.model_cfg_file, self.model_checkpoint, device='cpu')
@@ -40,17 +41,18 @@ class Detector:
             mymodel = self.model.module
         else:
             mymodel = self.model
-        final_img = mymodel.show_result(
+        mymodel.show_result(
             img=filepath,
             result=result,
             score_thr=score_thr,
             show=False,
             wait_time=0,
             win_name="Detection result",
-            bbox_color=(72, 101, 241),
-            text_color=(72, 101, 241),
+            bbox_color=(255, 0, 0),
+            mask_color=(200, 150, 0),
+            text_color=(255, 255, 255),  # white
             out_file=prediction_path  # save results on a specific file
         )
         print("End detection")
-        return result, final_img
+        return result
 

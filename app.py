@@ -24,7 +24,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
-app.config['UPLOAD_FOLDER'] = './food-recognition/uploads'   # Ricordarsi che è lo stesso path che c'è in prediction.html
+app.config['UPLOAD_FOLDER'] = './food-recognition/static/uploads'   # Ricordarsi che è lo stesso path che c'è in prediction.html
 #app.config['MODEL_PATH'] = 'model/mask_rcnn_food-challenge_0026.h5'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "thisisasupersecretkey"
@@ -130,7 +130,7 @@ def validate_image(stream):
 
 def predict_on_image(uploaded_filepath):
     base_name = remove_ext(uploaded_filepath)
-    prediction_path = app.config['UPLOAD_FOLDER'] + base_name + "_res.jpg"
+    prediction_path = app.config['UPLOAD_FOLDER'] + "/" + base_name + "_res.jpg"
     result, final_img = detector.inference(uploaded_filepath, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
     fig, ax = plt.subplots(figsize=(16, 16))
     image = Image.open(prediction_path)
@@ -162,7 +162,7 @@ def remove_ext(filename):
 
 def build_relative_path(filename):
     base = os.path.basename(filename)
-    rel_path = "../uploads/"+base
+    rel_path = "static/uploads/"+base
     return rel_path
 
 #========================= APP FUN ======================================#

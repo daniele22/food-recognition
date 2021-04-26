@@ -197,6 +197,8 @@
                 ddlCategories.options.add(option);
             }
 
+
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
@@ -226,32 +228,29 @@
     </div>
 </div>
 <div id="container">
-    <center>
-        <div id="uploaded">
 
+
+    <div id="uploaded" style="float: left; width: 50%">
+        <center>
             <h1>Uploaded File</h1>
             <img src={{filepath}} width="400" height="400"/>
-
-        </div>
-        <div id="prediction">
-
+        </center>
+    </div>
+    <div id="prediction" style="float: right; width: 50%">
+        <center>
             <h1>Predicted Output</h1>
             <img src={{prediction_path}} width="400" height="400"/>
+        </center>
+    </div>
 
-        </div>
-    </center>
 </div>
 <div>
     <button onclick="location.href = 'index.html';" id="homebtn" class="float-left submit-button">Home</button>
 </div>
-<!--    <center>-->
-<!--        <input type="button" onclick="CreateTableFromJSON()" value="View Detailed Results" />-->
-<!--        <p id="showData"></p>-->
-<!--    </center>-->
 
 <footer class="footer-distributed">
     <div class="footer-right">
-        <img src="../assets/uni_logo2.png" alt="Unibo logo" width="100" height="100">
+        <img src="static/uni_logo2.png" alt="Unibo logo" width="100" height="100">
     </div>
 
     <div class="footer-left">
@@ -316,6 +315,8 @@
             divContainer.style.display = "none";
         }
     }
+
+
 
 </script>
 
