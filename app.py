@@ -24,7 +24,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
-app.config['UPLOAD_PATH'] = './food-recognition/uploads'   # Ricordarsi che è lo stesso path che c'è in prediction.html
+app.config['UPLOAD_FOLDER'] = './food-recognition/uploads'   # Ricordarsi che è lo stesso path che c'è in prediction.html
 #app.config['MODEL_PATH'] = 'model/mask_rcnn_food-challenge_0026.h5'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "thisisasupersecretkey"
@@ -128,14 +128,16 @@ def validate_image(stream):
 # this function is used to predict on the uploaded image
 
 
-def predict_on_image(uploaded_file, score_threshold):
-    prediction_path = app.config['UPLOAD_PATH'] + "/inference_response.jpg"
-    result, final_img = detector.inference(uploaded_file, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
+def predict_on_image(uploaded_filepath):
+    base_name = remove_ext(uploaded_filepath)
+    prediction_path = app.config['UPLOAD_FOLDER'] + base_name + "_res.jpg"
+    result, final_img = detector.inference(uploaded_filepath, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
     fig, ax = plt.subplots(figsize=(16, 16))
     image = Image.open(prediction_path)
     ax.imshow(image)
     plt.show()
-
+    fig.savefig(prediction_path, bbox_inches='tight')  # save the figure to file
+    plt.close(fig)
     # global model
     # img = Image.open(uploaded_file)
     # img = np.array(img)
@@ -151,7 +153,17 @@ def predict_on_image(uploaded_file, score_threshold):
     response = [{"food": "food_prova", "score": "0.55"}]
     # for p,scr in zip(results[0]['class_ids'],results[0]['scores']):
     #     response.append({"food":class_names[p],"score":str(scr)})
-    return response
+    return response, prediction_path
+
+def remove_ext(filename):
+    base = os.path.basename(filename)
+    name = os.path.splitext(base)[0]
+    return name
+
+def build_relative_path(filename):
+    base = os.path.basename(filename)
+    rel_path = "../uploads/"+base
+    return rel_path
 
 #========================= APP FUN ======================================#
 @app.errorhandler(413)
@@ -186,10 +198,14 @@ def upload_files():
             uploaded_file.save(filepath)
             print("file saved")
             #file_url = url_for('uploaded_file', filename=filename)
-            response = predict_on_image(filepath)
+            response, prediction_path = predict_on_image(filepath)
             print("response:", response)
             session["response"] = response
-            return render_template("prediction.html", jsonfile=session["response"])
+            session["filename"] = build_relative_path(filename)
+            session["prediction_path"] = build_relative_path(prediction_path)
+            return render_template("prediction.html", jsonfile=session["response"],
+                                   filepath=session["filename"],
+                                   prediction_path=session["prediction_path"])
         else:
             flash('No selected file')
             return redirect(request.url)
@@ -202,7 +218,9 @@ def upload_files():
 def prediction():
     if request.method == "GET":
         print("prediction POST")
-        return render_template("prediction.html", jsonfile=session["response"])
+        return render_template("prediction.html", jsonfile=session["response"],
+                               filepath=session["filename"],
+                               prediction_path=session["prediction_path"])
     else:
         print("prediction GET")
         # check if the post request has the file part
@@ -223,10 +241,14 @@ def prediction():
             uploaded_file.save(filepath)
             print("file saved")
             # file_url = url_for('uploaded_file', filename=filename)
-            response = predict_on_image(filepath)
+            response, prediction_path = predict_on_image(filepath)
             print("response:", response)
             session["response"] = response
-            return render_template("prediction.html", jsonfile=session["response"])
+            session["filename"] = build_relative_path(filename)
+            session["prediction_path"] = build_relative_path(prediction_path)
+            return render_template("prediction.html", jsonfile=session["response"],
+                                   filepath=session["filename"],
+                                   prediction_path=session["prediction_path"])
         else:
             flash('No selected file')
             return "Invalid image", 400
