@@ -255,6 +255,13 @@ def prediction():
             return "Invalid image", 400
 
 
+
+#go to home btn
+@app.route('/background_process_test')
+def background_process_test():
+    print ("Go to Home")
+    return render_template('index.html')
+
 if __name__ == "__main__":
     # # get port. Default to 8080
     # port = int(os.environ.get('PORT', 8080))

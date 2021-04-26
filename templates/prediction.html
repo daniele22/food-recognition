@@ -199,6 +199,25 @@
 
 
 
+
+
+
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+        $(function() {
+          $('a#home_btn').on('click', function(e) {
+            e.preventDefault()
+            $.getJSON('/go_to_home',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+
+
+
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
@@ -227,6 +246,17 @@
         </div>
     </div>
 </div>
+
+<div>
+    <center>
+        <form>
+            <a href=# id=test>
+                <button class='btn btn-default'>Home</button>
+            </a>
+        </form>
+    </center>
+</div>
+
 <div id="container">
 
 
@@ -244,9 +274,7 @@
     </div>
 
 </div>
-<div>
-    <button onclick="location.href = 'index.html';" id="homebtn" class="float-left submit-button">Home</button>
-</div>
+
 
 <footer class="footer-distributed">
     <div class="footer-right">
@@ -315,6 +343,9 @@
             divContainer.style.display = "none";
         }
     }
+
+
+
 
 
 
