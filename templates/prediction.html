@@ -182,23 +182,6 @@
 
 
     </script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script type=text/javascript>
-        $(function() {
-          $('a#home_btn').on('click', function(e) {
-            e.preventDefault()
-            $.getJSON('/go_to_home',
-                function(data) {
-              //do nothing
-            });
-            return false;
-          });
-        });
-
-
-
-
-    </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
             integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
@@ -231,10 +214,9 @@
 
     <div>
         <center>
-            <form>
-                <a href=# id=test>
-                    <button class='btn btn-default'>Home</button>
-                </a>
+            <form method="GET" action="{{ url_for('upload_files') }}">
+                <input type="submit" name="btn_home" value="Home">
+
             </form>
         </center>
     </div>

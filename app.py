@@ -138,7 +138,7 @@ def predict_on_image(uploaded_filepath):
     # plt.show()
     # fig.savefig(prediction_path, bbox_inches='tight')  # save the figure to file
     # plt.close(fig)
-    
+
     # global model
     # img = Image.open(uploaded_file)
     # img = np.array(img)
@@ -255,13 +255,6 @@ def prediction():
             flash('No selected file')
             return "Invalid image", 400
 
-
-
-#go to home btn
-@app.route('/go_to_home')
-def go_to_home():
-    print ("Go to Home")
-    return render_template('index.html')
 
 if __name__ == "__main__":
     # # get port. Default to 8080
