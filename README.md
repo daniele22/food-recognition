@@ -2,10 +2,6 @@
 
 ![Food-Challenge](https://i.imgur.com/0G3PEc7.png)
 
-<p align="center">
- <a href="https://discord.gg/GTckBMx"><img src="https://img.shields.io/discord/657211973435392011?style=for-the-badge" alt="chat on Discord"></a>
-</p>
-
 # Table of contents
 - [🚀 Problem Statement](#-problem-statement)
 - [💪 Getting Started](#-getting-started)
