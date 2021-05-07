@@ -402,12 +402,12 @@ log_level = 'INFO'
 custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classes in the head is consistent with those in the dataset
 dist_params = dict(backend='nccl')
 
-load_from = '/content/drive/My Drive/ML/mask_rcnn_r50/epoch_8.pth'  # used to load the model
+load_from = '/content/drive/My Drive/ML/mask_rcnn_r50/epoch_10.pth'  # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 
 # working dir in with the logs are saved and also the checkpoints if another folder is not specified in checkpoint_config
-work_dir = '/content/drive/My Drive/ML/experiments'
+work_dir = '/content/drive/My Drive/ML/mask_rcnn_r50/logs'
 # Set seed thus the results are more reproducible 
 seed = 0
 gpu_ids = range(0, 1)
