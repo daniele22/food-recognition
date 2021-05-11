@@ -404,7 +404,7 @@ checkpoint_config = dict(
     interval=1,  # number of epochs
     by_epoch=True, # wheter interval represents epochs or iterations
     save_optimizer=True,  # save optimizer is needed to resume experiments
-    out_dir='/content/drive/My Drive/ML/htc_r50',  # the directory in which save checkpoints
+    out_dir='/content/drive/My Drive/ML/models/htc_r50',  # the directory in which save checkpoints
     save_last=True) 
 
 # log configs
@@ -418,12 +418,12 @@ custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classe
 dist_params = dict(backend='nccl')
 
 # runtime settings
-load_from = '/content/drive/My Drive/ML/htc_r50/epoch_20.pth'   # used to load the model
+load_from = '/content/drive/My Drive/ML/models/htc_r50/epoch_20.pth'   # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 
 # working dir in with the logs are saved and also the checkpoints if another folder is not specified in checkpoint_config
-work_dir = '/content/drive/My Drive/ML/experiments'
+work_dir = '/content/drive/My Drive/ML/models/htc_r50/logs'
 # Set seed thus the results are more reproducible 
 seed = 0
 gpu_ids = range(0, 1)
