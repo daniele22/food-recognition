@@ -59,7 +59,7 @@ model = dict(
                 loss_cls=dict(
                     type='CrossEntropyLoss',
                     use_sigmoid=False,
-                    loss_weight=1.0),
+                    loss_weight=2.0),
                 loss_bbox=dict(type='SmoothL1Loss', beta=1.0,
                                loss_weight=1.0)),
             dict(
@@ -76,7 +76,7 @@ model = dict(
                 loss_cls=dict(
                     type='CrossEntropyLoss',
                     use_sigmoid=False,
-                    loss_weight=1.0),
+                    loss_weight=2.0),
                 loss_bbox=dict(type='SmoothL1Loss', beta=1.0,
                                loss_weight=1.0)),
             dict(
@@ -93,7 +93,7 @@ model = dict(
                 loss_cls=dict(
                     type='CrossEntropyLoss',
                     use_sigmoid=False,
-                    loss_weight=1.0),
+                    loss_weight=2.0),
                 loss_bbox=dict(type='SmoothL1Loss', beta=1.0, loss_weight=1.0))
         ],
         mask_roi_extractor=dict(
@@ -209,7 +209,7 @@ model = dict(
         rcnn=dict(
             score_thr=0.001,
             nms=dict(type='nms', iou_threshold=0.5),
-            max_per_img=100,
+            max_per_img=30,
             mask_thr_binary=0.5)))
 
 # dataset settings
@@ -413,7 +413,7 @@ data = dict(
 evaluation = dict(
     classwise=True, # evaluation of mAP per class (https://github.com/open-mmlab/mmdetection/issues/4222)
     metric=['bbox', 'segm'],  # Options are 'bbox', 'segm', 'proposal', 'proposal_fast'.
-    logger="/content/drive/MyDrive/models/htc_r50/test_results/eval_logger.txt", # https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py
+    logger="/content/drive/MyDrive/models/htc_r50_pretrained/test_results/eval_logger.txt", # https://github.com/open-mmlab/mmdetection/blob/master/mmdet/datasets/coco.py
     interval=20)  # interval is the number of iterations between each evaluation
 # optimizer
 optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
@@ -436,7 +436,7 @@ checkpoint_config = dict(
     interval=1,  # number of epochs
     by_epoch=True, # wheter interval represents epochs or iterations
     save_optimizer=True,  # save optimizer is needed to resume experiments
-    out_dir='/content/drive/My Drive/ML/models/htc_r50',  # the directory in which save checkpoints
+    out_dir='/content/drive/My Drive/ML/models/htc_r50_pretrained',  # the directory in which save checkpoints
     save_last=True)
 
 # log configs
@@ -450,12 +450,12 @@ custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classe
 dist_params = dict(backend='nccl')
 
 # runtime settings
-load_from = '/content/drive/My Drive/ML/models/htc_r50/epoch_10.pth'   # used to load the model
+load_from = '/content/drive/My Drive/ML/models/htc_r50_pretrained/epoch_10.pth'   # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 
 # working dir in with the logs are saved and also the checkpoints if another folder is not specified in checkpoint_config
-work_dir = '/content/drive/MyDrive/ML/models/htc_r50/logs'
+work_dir = '/content/drive/MyDrive/ML/models/htc_r50_pretrained/logs'
 # Set seed thus the results are more reproducible
 seed = 0
 gpu_ids = range(0, 1)
