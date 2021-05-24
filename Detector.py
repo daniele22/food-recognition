@@ -42,7 +42,8 @@ class Detector:
             mymodel = self.model.module
         else:
             mymodel = self.model
-        mymodel.show_result(
+        # mymodel.show_result(
+        BaseDetector.show_result(
             img=filepath,
             result=result,
             score_thr=score_thr,
@@ -52,7 +53,8 @@ class Detector:
             bbox_color=(255, 0, 0),
             mask_color=(200, 150, 0),
             text_color=(255, 255, 255),  # white
-            out_file=prediction_path  # save results on a specific file
+            out_file=prediction_path,  # save results on a specific file
+            self=mymodel
         )
         print("End detection")
         return result
