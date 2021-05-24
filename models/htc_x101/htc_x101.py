@@ -459,7 +459,7 @@ checkpoint_config = dict(
 # log configs
 log_config = dict(
     interval=20,  # number of iterations
-    hooks=[dict(type='TensorboardLoggerHook'),  # log used for tensorboard
+    hooks=[#dict(type='TensorboardLoggerHook'),  # log used for tensorboard
            dict(type='TextLoggerHook')])  # text logs
 log_level = 'INFO'
 
@@ -467,7 +467,7 @@ custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classe
 dist_params = dict(backend='nccl')
 
 # runtime settings
-load_from = '/content/drive/My Drive/ML/models/htc_x101/epoch_19.pth'   # used to load the model
+load_from = '/content/drive/My Drive/ML/models/htc_x101/epoch_20.pth'   # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 

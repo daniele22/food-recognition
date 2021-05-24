@@ -24,7 +24,7 @@ sys.path.append(ROOT_DIR)  # To find local version of the library
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 2 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png']
-app.config['UPLOAD_FOLDER'] = './food-recognition/static/uploads'   # Ricordarsi che è lo stesso path che c'è in prediction.html
+app.config['UPLOAD_FOLDER'] = './food-recognition/static/uploads'   # The same path in prediction.html !!!
 #app.config['MODEL_PATH'] = 'model/mask_rcnn_food-challenge_0026.h5'
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 app.secret_key = "thisisasupersecretkey"
@@ -35,89 +35,18 @@ app.config.update(
     DROPZONE_MAX_FILES=20,
 )
 
+# creation of a dropzone
 dropzone = Dropzone(app)
 run_with_ngrok(app)  # comment if not using colab
 
+# instantiation of detector
 detector = Detector()
-
-# function to load img from url
-
-
-# def load_image_url(url):
-#     response = requests.get(url)
-#     img = Image.open(io.BytesIO(response.content))
-#     return img
-#
-# # run inference
-#
-#
-# def run_inference(img_path="file.jpg"):
-#     # run inference using mmdetection
-#     result_img = detector.inference(img_path)
-#     # clean up
-#     try:
-#         os.remove(img_path)
-#     except:
-#         pass
-#
-#     return result_img
-#
-#
-# @app.errorhandler(413)
-# def too_large(e):
-#     return "File is too large", 413
-#
-#
-# # carica la homepage
-# @app.route("/")
-# def index():
-#     return render_template('index.html')
-#
-#
-# @app.route("/detect", methods=['POST', 'GET'])
-# def upload():
-#     if request.method == 'POST':
-#         try:
-#             # open image
-#             file = Image.open(request.files['file'].stream)
-#             # remove alpha channel
-#             rgb_im = file.convert('RGB')
-#             rgb_im.save('file.jpg')
-#         # failure
-#         except:
-#             return render_template("failure.html")
-#
-#     elif request.method == 'GET':
-#         # get url
-#         url = request.args.get("url")
-#         # save
-#         try:
-#             # save image as jpg
-#             # urllib.request.urlretrieve(url, 'file.jpg')
-#             rgb_im = load_image_url(url)
-#             rgb_im = rgb_im.convert('RGB')
-#             rgb_im.save('file.jpg')
-#         # failure
-#         except:
-#             return render_template("failure.html")
-#
-#     # run inference
-#     # result_img = run_inference_transform()
-#     result_img = run_inference('file.jpg')
-#
-#     # create file-object in memory
-#     file_object = io.BytesIO()
-#
-#     # write PNG in file-object
-#     result_img.save(file_object, 'PNG')
-#
-#     # move to beginning of file so `send_file()` it will read from start
-#     file_object.seek(0)
-#
-#     return send_file(file_object, mimetype='image/jpeg')
 
 #========================= UTILS FUN ======================================#
 def validate_image(stream):
+    """
+    check if is a valid image
+    """
     header = stream.read(512)
     stream.seek(0)
     format = imghdr.what(None, header)
@@ -129,6 +58,10 @@ def validate_image(stream):
 
 
 def predict_on_image(uploaded_filepath):
+    """
+    use the detector to predict the segmentation for a specific image in input.
+    save the resulting image in a specific folder
+    """
     base_name = remove_ext(uploaded_filepath)
     prediction_path = app.config['UPLOAD_FOLDER'] + "/" + base_name + "_res.jpg"
     result = detector.inference(uploaded_filepath, prediction_path, ) # result is the detection result which contains all detected bboxes. result is a list, and the index corresponds to the category id.
@@ -158,11 +91,20 @@ def predict_on_image(uploaded_filepath):
     return response, prediction_path
 
 def remove_ext(filename):
+    """
+    remove the extension from a filename.
+    E.g. imgname.jpg returns imgname
+    :param string filename: name of the file
+    :return: string
+    """
     base = os.path.basename(filename)
     name = os.path.splitext(base)[0]
     return name
 
 def build_relative_path(filename):
+    """
+    returns the path to a specific file inside the application
+    """
     base = os.path.basename(filename)
     rel_path = "static/uploads/"+base
     return rel_path
@@ -219,12 +161,12 @@ def upload_files():
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
     if request.method == "GET":
-        print("prediction POST")
+        print("prediction GET")
         return render_template("prediction.html", jsonfile=session["response"],
                                filepath=session["filename"],
                                prediction_path=session["prediction_path"])
     else:
-        print("prediction GET")
+        print("prediction POST")
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')

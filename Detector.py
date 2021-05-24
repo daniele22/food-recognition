@@ -22,17 +22,18 @@ class Detector:
 
     def __init__(self):
         # config file name
-        self.model_cfg_file = "/content/food-recognition/models/mask_rcnn_r50/mask_rcnn_r50.py"
+        self.model_cfg_file = "/content/food-recognition/models/htc_x101/htc_x101.py"
         # get weights
-        self.model_checkpoint = '/content/drive/MyDrive/ML/mask_rcnn_r50/epoch_8.pth'
+        self.model_checkpoint = '/content/drive/MyDrive/ML/models/htc_x101/epoch_20.pth'
         #self.cfg = Config.fromfile("/content/food-recognition/models/mask_rcnn_r50/mask_rcnn_r50.py")
         # build the model from a config file and a checkpoint file
         #self.model = init_detector(config_file, checkpoint_file, device='cuda:0')
-        self.model = init_detector(self.model_cfg_file, self.model_checkpoint, device='cpu')
+        self.device = 'cpu'
+        self.model = init_detector(self.model_cfg_file, self.model_checkpoint, device=self.device)
 
 
     def inference(self, filepath, prediction_path, score_thr=0.3):
-        print("Inference detection on:", filepath, " - prediction in:", prediction_path)
+        print("Inference detection on:", filepath, " - prediction in:", prediction_path, " - detection device:", self.device)
         result = inference_detector(self.model, filepath)
         # show the results
         #final_img = show_result_pyplot(self.model, filepath, result, score_thr=0.3, title='Detection result', wait_time=0)

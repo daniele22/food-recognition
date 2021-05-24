@@ -298,95 +298,99 @@ classes = [
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 # Data augmetation using albumentations library
-albu_train_transforms = [
+# ref: https://mmdetection.readthedocs.io/en/latest/_modules/mmdet/datasets/pipelines/transforms.html
+# ref: https://albumentations.ai/docs/
+albumentations_train_transforms = [
     dict(
-        type='ShiftScaleRotate',
+        type='ShiftScaleRotate',  # Randomly apply affine transforms: translate, scale and rotate the input.
         shift_limit=0.0625,
-        scale_limit=0.0,
-        rotate_limit=0,
-        interpolation=1,
-        p=0.5),
+        scale_limit=0.1,
+        rotate_limit=20,
+        p=0.7),  # probability of applying the transform
+    # dict(type='RandomRotate90',
+    #     p=0.5),
+    # dict(type='CLAHE',
+    #     p=0.15),
     dict(
-        type='RandomBrightnessContrast',
+        type='RandomBrightnessContrast',  # Randomly change brightness and contrast of the input image
         brightness_limit=[0.1, 0.3],
         contrast_limit=[0.1, 0.3],
-        p=0.2),
-    dict(
-        type='OneOf',
+        p=0.3),
+     dict(
+        type="OneOf", # Select one of transforms to apply. Transforms probabilities will be normalized to one 1, so in this case transforms probabilities works as weights. Default probability is 0.5
         transforms=[
-            dict(
-                type='RGBShift',
-                r_shift_limit=10,
-                g_shift_limit=10,
-                b_shift_limit=10,
-                p=1.0),
-            dict(
-                type='HueSaturationValue',
-                hue_shift_limit=20,
-                sat_shift_limit=30,
-                val_shift_limit=20,
-                p=1.0)
+            dict(type="Blur", blur_limit=5),  # Blur the input image using a random-sized kernel
+            dict(type="MotionBlur", blur_limit=5),
+            dict(type="GaussNoise", var_limit=25),
+            dict(type="ImageCompression", quality_lower=75),  # decrease jpeg with lower bound on the image quality
         ],
-        p=0.1),
-    dict(type='JpegCompression', quality_lower=85, quality_upper=95, p=0.2),
-    dict(type='ChannelShuffle', p=0.1),
-    dict(
-        type='OneOf',
-        transforms=[
-            dict(type='Blur', blur_limit=3, p=1.0),
-            dict(type='MedianBlur', blur_limit=3, p=1.0)
-        ],
-        p=0.1),
+        p=0.5,
+    ),
+    # dict(type='ChannelShuffle', p=0.1),
+    dict(type='MultiplicativeNoise', multiplier=[0.5, 1.5], per_channel=True, p=0.1)
 ]
+
+# TRAINING PIPELINE
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
-    dict(
-        type='LoadAnnotations', with_bbox=True, with_mask=True),
-    dict(type='Resize', img_scale=(800, 800), keep_ratio=True),
-    dict(type='Pad', size_divisor=32),
-    dict(
-        type='Albu',
-        transforms=albu_train_transforms,
-        bbox_params=dict(
-            type='BboxParams',
-            format='pascal_voc',
-            label_fields=['gt_labels'],
-            min_visibility=0.0,
-            filter_lost_elements=True),
-        keymap={
-            'img': 'image',
-            'gt_masks': 'masks',
-            'gt_bboxes': 'bboxes'
-        },
-        update_pad_shape=False,
-        skip_img_without_anno=True),
-    dict(type='Normalize', **img_norm_cfg),
-    dict(type='Pad', size_divisor=32),
-    dict(type='DefaultFormatBundle'),
-    dict(
-        type='Collect',
-        keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks'],
-        meta_keys=('filename', 'ori_shape', 'img_shape', 'img_norm_cfg',
-                   'pad_shape', 'scale_factor'))
+  # A. DATA LOADING
+    dict(type='LoadImageFromFile'),  # load images from file path
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),  # load annotations for current image
+
+  # B. DATA PRE-PROCESSING
+    dict(type='Resize',  # Augmentation pipeline that resize the images and their annotations
+         img_scale=[(480, 480), (960, 960)],   # multiscale training -> resizing images to different scales at each iteration
+         # ``ratio_range is None`` and ``multiscale_mode == "range"``: randomly sample a scale from the multiscale range.
+         ratio_range=None,
+         multiscale_mode='range',
+         keep_ratio=True),  # keep the aspect ratio when resizing the image.
+    dict(type='Albu',
+         transforms=albumentations_train_transforms,  # A list of albu transformations
+         # bbox_params and keymap are needed to use albumentations with bbox and masks
+         bbox_params=dict(  # Parameters of bounding boxes for the albumentation `Compose`
+             type='BboxParams',
+             format='pascal_voc',
+             label_fields=['gt_labels'],
+             min_visibility=0.0,
+             filter_lost_elements=True),
+         keymap={  # Contains {'input key':'albumentation-style key'}
+             'img': 'image',
+             'gt_masks': 'masks',
+             'gt_bboxes': 'bboxes'
+         },
+         update_pad_shape=False,
+         skip_img_without_anno=False),
+    dict(type='RandomFlip',  #  Augmentation pipeline that flip the images and their annotations
+         # ``flip_ratio`` is float, ``direction`` is string: the image will be ``direction``ly flipped with probability of ``flip_ratio`` .
+         flip_ratio=0.5,  # The ratio or probability to flip
+         direction='horizontal'),  # valid directions ['horizontal', 'vertical', 'diagonal']
+    dict(type='Normalize', **img_norm_cfg),  # Augmentation pipeline that normalize the input images
+    dict(type='Pad', size_divisor=32),  # Pad config, with the number the padded images should be divisible
+
+  # C. FORMATTING
+    dict(type='DefaultFormatBundle'),  # It simplifies the pipeline of formatting common fields, including "img", "proposals", "gt_bboxes", "gt_labels", "gt_masks" and "gt_semantic_seg".Formatted using: transpose, to tensor, to DataContainer
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels', 'gt_masks'])  # Pipeline that decides which keys in the data should be passed to the detector
 ]
 test_pipeline = [
-    dict(type='LoadImageFromFile'),
+  # A. DATA LOADING
+    dict(type='LoadImageFromFile'), # load image from file
+
+  # B. TEST TIME AUGMENTATION
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(800, 800),
-        flip=True,
+        img_scale=(800, 800),  # Decides the largest scale for testing, used for the Resize pipeline
+        flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),
-            dict(type='RandomFlip', flip_ratio=0.5),
+            dict(type='RandomFlip'),
             dict(type='Normalize', **img_norm_cfg),
             dict(type='Pad', size_divisor=32),
             dict(type='DefaultFormatBundle'),
-            dict(type='Collect', keys=['img']),
+            dict(type='Collect', keys=['img'])
         ])
 ]
 data = dict(
     imgs_per_gpu=4,
-    workers_per_gpu=8,
+    workers_per_gpu=2,
     train=dict(
         type=dataset_type,
         ann_file='train/fixed_annotations_bbox.json',
@@ -428,7 +432,7 @@ lr_config = dict(
     step=[17, 24])
 
 # epochs configs
-total_epochs = 20
+total_epochs = 10
 runner = dict(type='EpochBasedRunner', max_epochs=total_epochs)
 
 # Checkpoint config to save partial results during training
@@ -436,13 +440,13 @@ checkpoint_config = dict(
     interval=1,  # number of epochs
     by_epoch=True, # wheter interval represents epochs or iterations
     save_optimizer=True,  # save optimizer is needed to resume experiments
-    out_dir='/content/drive/My Drive/ML/models/htc_r50',  # the directory in which save checkpoints
+    out_dir='/content/drive/MyDrive/ML/models/htc_r50',  # the directory in which save checkpoints
     save_last=True)
 
 # log configs
 log_config = dict(
     interval=20,  # number of iterations
-    hooks=[dict(type='TensorboardLoggerHook'),  # log used for tensorboard
+    hooks=[#dict(type='TensorboardLoggerHook'),  # log used for tensorboard
            dict(type='TextLoggerHook')])  # text logs
 log_level = 'INFO'
 
@@ -450,7 +454,7 @@ custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classe
 dist_params = dict(backend='nccl')
 
 # runtime settings
-load_from = '/content/drive/My Drive/ML/models/htc_r50/epoch_10.pth'   # used to load the model
+load_from = '/content/drive/MyDrive/ML/models/htc_r50/epoch_10.pth'   # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 

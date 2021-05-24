@@ -310,27 +310,8 @@ albumentations_train_transforms = [
         ],
         p=0.5,
     ),
-    #  dict(
-    #     type="CoarseDropout",  # Augmenter that sets rectangular areas within images to zero.
-    #     max_holes=30,
-    #     max_height=30,
-    #     max_width=30,
-    #     min_holes=5,
-    #     min_height=10,
-    #     min_width=10,
-    #     fill_value=img_norm_cfg["mean"][::-1],
-    #     p=0.1,  # low probability
-    # ),
-    #dict(type='JpegCompression', quality_lower=75, quality_upper=99, p=0.25),
-    #dict(type="GaussNoise",p=0.2),
-    dict(type='ChannelShuffle', p=0.1),
-    #dict(
-    #    type='OneOf',
-    #    transforms=[
-    #        dict(type='Blur', blur_limit=3, p=1.0),
-    #        dict(type='GaussianBlur', blur_limit=3, p=1.0)
-    #    ],
-    #    p=0.15),
+    # dict(type='ChannelShuffle', p=0.1),
+    dict(type='MultiplicativeNoise', multiplier=[0.5, 1.5], per_channel=True, p=0.1)
 ]
 
 # TRAINING PIPELINE
@@ -444,7 +425,7 @@ lr_config = dict(
     step=[16, 19])  # Steps to decay the learning rate
 
 # epochs configs
-total_epochs = 20
+total_epochs = 10
 runner = dict(type='EpochBasedRunner', max_epochs=total_epochs)
 
 # Checkpoint config to save partial results during training
@@ -452,25 +433,25 @@ checkpoint_config = dict(
     interval=1,  # number of epochs
     by_epoch=True, # wheter interval represents epochs or iterations
     save_optimizer=True,  # save optimizer is needed to resume experiments
-    out_dir='/content/drive/My Drive/ML/models/cascade_mask_rcnn_r50',  # the directory in which save checkpoints
+    out_dir='/content/drive/MyDrive/ML/models/cascade_mask_rcnn_r50',  # the directory in which save checkpoints
     save_last=True)
 
 # log configs
 log_config = dict(
     interval=20,  # number of iterations
-    hooks=[dict(type='TensorboardLoggerHook'),  # log used for tensorboard
+    hooks=[#dict(type='TensorboardLoggerHook'),  # log used for tensorboard
            dict(type='TextLoggerHook')])  # text logs
 log_level = 'INFO'
 
 custom_hooks = [dict(type='NumClassCheckHook')]  # chekc if the number of classes in the head is consistent with those in the dataset
 dist_params = dict(backend='nccl')
 
-load_from = '/content/drive/My Drive/ML/models/cascade_mask_rcnn_r50/epoch_10.pth'   # used to load the model
+load_from = '/content/drive/MyDrive/ML/models/cascade_mask_rcnn_r50/epoch_10.pth'   # used to load the model
 resume_from = None  # used to resume and continue an experiment ( resume also the optimizer )
 workflow = [('train', 1)]
 
 # working dir in with the logs are saved and also the checkpoints if another folder is not specified in checkpoint_config
-work_dir = '/content/drive/My Drive/ML/models/cascade_mask_rcnn_r50/logs'
+work_dir = '/content/drive/MyDrive/ML/models/cascade_mask_rcnn_r50/logs'
 # Set seed thus the results are more reproducible
 seed = 0
 gpu_ids = range(0, 1)
