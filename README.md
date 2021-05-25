@@ -33,13 +33,16 @@ Therefore:
 The dataset of the [AIcrowd Food Recognition Challenge](https://www.aicrowd.com/challenges/food-recognition-challenge) is available at [https://www.aicrowd.com/challenges/food-recognition-challenge/dataset_files](https://www.aicrowd.com/challenges/food-recognition-challenge/dataset_files) and it's the dataset used in this project.
 - We have a total of **24120 RGB images** with **2053 validation**, all in **MS-COCO format** and test set for now is same as validation ( debug mode ). 
 
+Moreover, you can get the data with correct annotations, checkpoint files, logs and test results by downloading the folder at https://drive.google.com/drive/folders/1koPvl2Kdu3qPkOSB55RgGWQZ0vXncfP5?usp=sharing
+
 ## Using this repository
 This repository contains the code, the models and checkpoint files needed to train/inference with some algorithms.
 
 It's not necessary to clone the repository, you can just download the notebook file and run it in google colab, this is how the project has been developed. It uses `mmdetection` library for build train and test the models.
 MMdetection is an open source object detection toolbox based on PyTorch, with a large Model Zoo with many customised models that can be plugged and tested in with just a single config file modification. You can read more about it at: [mmdetection github](https://github.com/open-mmlab/mmdetection/)
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daniele22/notebbok/FoodRecognition.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daniele22/food-recognition/blob/master/notebook/FoodChallenge.ipynb)
+
 All the commands for installing the needed dependences are present and executed in the notebook, some examples:
 
 Clone the repository
@@ -66,7 +69,9 @@ This repository contains also code to serve a mmdetection model as a webapp for 
 
 Through the web app you can upload pictures and get predictions from AI’s point of view.
 
-Inspired from (https://discourse.aicrowd.com/t/a-flask-webapp-for-maskrcnn-inference-visualization/3984)
+![Web-app](https://github.com/daniele22/food-recognition/blob/master/static/demo.gif?raw=true)
+
+There is a similar web app for the food challenge available at: [Matterport-mask-rcnn-web-app](https://discourse.aicrowd.com/t/a-flask-webapp-for-maskrcnn-inference-visualization/3984)
 
 # 🧩 Repository structure
 
@@ -77,7 +82,7 @@ Inspired from (https://discourse.aicrowd.com/t/a-flask-webapp-for-maskrcnn-infer
 `app.py` | code to run the web app
 `detector.py` | contains code to make inference with a model builded with mmdetection
 `const.py` | list of classes recognized by the models
-`requirements.txt` | List of python packages that should be installed (via `pip`) for run the code
+`requirements.txt` | List of python packages that should be installed (via `pip`) for run the code (not all the packages needed are in the requirement file, the notebook containes all the required dependences)
 
 ## Folders
 
@@ -86,6 +91,7 @@ Inspired from (https://discourse.aicrowd.com/t/a-flask-webapp-for-maskrcnn-infer
 `models` | contains the models cofig file (for mmdet library), the checkpoints and the training logs results
 `static` | this repo will contain the images loaded with the web app
 `template` | contains the html file of the web app
+`notebook` | contains the notebook that you can use to expore the data, train models, test them and visualize the results
 
 
 # 📎 Some links to useful resources on AICrowd
