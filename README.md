@@ -36,9 +36,9 @@ The dataset of the [AIcrowd Food Recognition Challenge](https://www.aicrowd.com/
 Moreover, you can get the data with correct annotations, checkpoint files, logs and test results by downloading the folder at https://drive.google.com/drive/folders/1koPvl2Kdu3qPkOSB55RgGWQZ0vXncfP5?usp=sharing
 
 ## Using this repository
-This repository contains the code, the models and checkpoint files needed to train/inference with some algorithms.
+This repository contains the code, the models definitions and all the information needed to train/inference with some algorithms.
 
-It's not necessary to clone the repository, you can just download the notebook file and run it in google colab, this is how the project has been developed. It uses `mmdetection` library for build train and test the models.
+It's not necessary to clone the repository, you can just download the notebook file and run it in google colab, this is how the project has been developed. It uses `mmdetection` library for build, train and test the models.
 MMdetection is an open source object detection toolbox based on PyTorch, with a large Model Zoo with many customised models that can be plugged and tested in with just a single config file modification. You can read more about it at: [mmdetection github](https://github.com/open-mmlab/mmdetection/)
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/daniele22/food-recognition/blob/master/notebook/FoodChallenge.ipynb)
@@ -58,7 +58,7 @@ pip install mmdetection
 ...
 ```
 
-By default the notebook uses Google Drive to load and save file, but you can change teh values of some variables at the beginning of the notebook and set different settings, e.g. download the dataset directly from aicrowd urls.
+By default the notebook uses Google Drive to load and save file, but you can change the values of some variables at the beginning of the notebook and set different settings, e.g. download the dataset directly from aicrowd urls.
 
 ## Running the code locally
 
@@ -67,7 +67,7 @@ The code has not been tested locally because `mmdetection` requires Linux or Mac
 # The Web App
 This repository contains also code to serve a mmdetection model as a webapp for easy visualization of results. To demo the WebApp you can run same the colab notebook, which will take care of all required dependencies.
 
-Through the web app you can upload pictures and get predictions from AI’s point of view.
+Through the web app you can upload pictures (in jpg format!) and get predictions from AI’s point of view.
 
 ![Web-app](https://github.com/daniele22/food-recognition/blob/master/static/demo.gif?raw=true)
 
