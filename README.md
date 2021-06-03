@@ -92,6 +92,7 @@ There is a similar web app for the food challenge available at: [Matterport-mask
 `static` | this repo will contain the images loaded with the web app
 `template` | contains the html file of the web app
 `notebook` | contains the notebook that you can use to expore the data, train models, test them and visualize the results
+`report` | contains the project report in pdf format
 
 
 # 📎 Some links to useful resources on AICrowd
